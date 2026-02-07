@@ -115,65 +115,83 @@ export function HeroSection({ onExploreClick, onNewsClick }: HeroSectionProps) {
       {/* Main Content */}
       <div
         ref={contentRef}
-        className="relative z-20 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8 pt-20 pb-24"
+        className="relative z-20 flex flex-col min-h-screen px-4 sm:px-6 lg:px-8 pt-24 pb-8"
       >
-        {/* Badge */}
-        <div className="hero-badge mb-4 sm:mb-6" style={{ opacity: 0 }}>
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs sm:text-sm font-mono tracking-wider uppercase">
-            <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-[#FF5A3C]" />
-            Discover the Himalayas
-          </span>
+        {/* Content Wrapper */}
+        <div className="flex-1 flex flex-col items-center justify-center w-full mb-8">
+          {/* Badge */}
+          <div className="hero-badge mb-4 sm:mb-6" style={{ opacity: 0 }}>
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs sm:text-sm font-mono tracking-wider uppercase">
+              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-[#FF5A3C]" />
+              Discover the Himalayas
+            </span>
+          </div>
+
+          {/* Title */}
+          <h1
+            className="hero-title text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-tighter font-['Space_Grotesk'] text-center"
+            style={{ opacity: 0 }}
+          >
+            <span className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
+              {slides[currentSlide].title}
+            </span>
+          </h1>
+
+          {/* Subtitle */}
+          <p
+            className="hero-subtitle mt-4 sm:mt-6 text-lg sm:text-xl md:text-2xl text-muted-foreground text-center max-w-xl"
+            style={{ opacity: 0 }}
+          >
+            {slides[currentSlide].subtitle}
+          </p>
+
+          {/* CTA Buttons */}
+          <div
+            className="hero-cta mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4"
+            style={{ opacity: 0 }}
+          >
+            <Button
+              size="lg"
+              onClick={onExploreClick}
+              className="btn-coral text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 rounded-full group"
+            >
+              Explore Destinations
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 transition-transform group-hover:translate-x-1" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={onNewsClick}
+              className="rounded-full border-2 border-foreground/20 hover:border-[#FF5A3C] hover:text-[#FF5A3C] text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 bg-background/50 backdrop-blur-sm"
+            >
+              <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              Latest News
+            </Button>
+          </div>
         </div>
 
-        {/* Title */}
-        <h1
-          className="hero-title text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-tighter font-['Space_Grotesk'] text-center"
-          style={{ opacity: 0 }}
-        >
-          <span className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
-            {slides[currentSlide].title}
-          </span>
-        </h1>
-
-        {/* Subtitle */}
-        <p
-          className="hero-subtitle mt-4 sm:mt-6 text-lg sm:text-xl md:text-2xl text-muted-foreground text-center max-w-xl"
-          style={{ opacity: 0 }}
-        >
-          {slides[currentSlide].subtitle}
-        </p>
-
-        {/* CTA Buttons */}
-        <div
-          className="hero-cta mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4"
-          style={{ opacity: 0 }}
-        >
-          <Button
-            size="lg"
-            onClick={onExploreClick}
-            className="btn-coral text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 rounded-full group"
-          >
-            Explore Destinations
-            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 transition-transform group-hover:translate-x-1" />
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={onNewsClick}
-            className="rounded-full border-2 border-foreground/20 hover:border-[#FF5A3C] hover:text-[#FF5A3C] text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 bg-background/50 backdrop-blur-sm"
-          >
-            <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-            Latest News
-          </Button>
+        {/* Slide Indicators */}
+        <div className="w-full flex justify-center gap-2 mb-8">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                index === currentSlide
+                  ? 'w-8 bg-[#FF5A3C]'
+                  : 'bg-white/30 hover:bg-white/50'
+              }`}
+            />
+          ))}
         </div>
 
         {/* Stats Bar */}
         <div
-          className="hero-stats absolute bottom-20 sm:bottom-24 left-0 right-0 px-4 sm:px-6 lg:px-8"
+          className="hero-stats w-full"
           style={{ opacity: 0 }}
         >
           <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-black/10 backdrop-blur-md border border-white/10">
               {[
                 { value: '7', label: 'Provinces' },
                 { value: '77', label: 'Districts' },
@@ -191,23 +209,8 @@ export function HeroSection({ onExploreClick, onNewsClick }: HeroSectionProps) {
           </div>
         </div>
 
-        {/* Slide Indicators */}
-        <div className="absolute bottom-36 sm:bottom-40 left-1/2 -translate-x-1/2 flex gap-2">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentSlide
-                  ? 'w-8 bg-[#FF5A3C]'
-                  : 'bg-white/30 hover:bg-white/50'
-              }`}
-            />
-          ))}
-        </div>
-
         {/* Scroll Indicator */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground/50">
+        <div className="flex flex-col items-center gap-2 text-muted-foreground/50 mt-4">
           <span className="text-[10px] uppercase tracking-widest">Scroll</span>
           <ChevronDown className="w-4 h-4 animate-bounce" />
         </div>

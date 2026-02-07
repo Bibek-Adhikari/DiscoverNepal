@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { destinations, categoryColors, type Destination, type DestinationCategory } from '@/data/nepalData';
+import { destinations, categoryColors, provinces, type Destination, type DestinationCategory } from '@/data/nepalData';
 import { X, Mountain, Thermometer, Calendar, Wind, Navigation } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -341,5 +341,4 @@ export function InteractiveMap({ sectionRef }: InteractiveMapProps) {
   );
 }
 
-// Import provinces for the detail panel
-import { provinces } from '@/data/nepalData';
+
