@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 14% 96%;
+    --foreground: 220 30% 8%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 30% 8%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 30% 8%;
+    --primary: 220 30% 8%;
+    --primary-foreground: 220 14% 96%;
+    --secondary: 220 10% 92%;
+    --secondary-foreground: 220 30% 8%;
+    --muted: 220 10% 92%;
+    --muted-foreground: 220 8% 46%;
+    --accent: 11 100% 62%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 10% 88%;
+    --input: 220 10% 88%;
+    --ring: 11 100% 62%;
+    --radius: 1.125rem;
+    
+    /* Custom Nepal Theme Colors */
+    --nepal-snow: 0 0% 98%;
+    --nepal-sunrise: 24 100% 62%;
+    --nepal-prayer: 0 72% 51%;
+    --nepal-mountain: 217 50% 28%;
+    --nepal-coral: 11 100% 62%;
+    --nepal-teal: 180 45% 42%;
+  }
+
+  .dark {
+    --background: 220 35% 6%;
+    --foreground: 220 10% 96%;
+    --card: 220 30% 10%;
+    --card-foreground: 220 10% 96%;
+    --popover: 220 30% 10%;
+    --popover-foreground: 220 10% 96%;
+    --primary: 220 10% 96%;
+    --primary-foreground: 220 30% 8%;
+    --secondary: 220 25% 14%;
+    --secondary-foreground: 220 10% 96%;
+    --muted: 220 25% 14%;
+    --muted-foreground: 220 10% 64%;
+    --accent: 24 100% 58%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 25% 18%;
+    --input: 220 25% 18%;
+    --ring: 24 100% 58%;
+    
+    /* Dark mode Nepal Theme */
+    --nepal-snow: 220 10% 90%;
+    --nepal-sunrise: 24 100% 58%;
+    --nepal-prayer: 0 65% 45%;
+    --nepal-mountain: 217 60% 55%;
+    --nepal-coral: 24 100% 58%;
+    --nepal-teal: 180 40% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  
+  .font-mono {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+}
+
+@layer components {
+  .card-nepal {
+    @apply rounded-[28px] bg-card shadow-[0_18px_50px_rgba(11,15,23,0.10)] border border-border/50;
+  }
+  
+  .card-nepal-sm {
+    @apply rounded-[18px] bg-card shadow-[0_12px_35px_rgba(11,15,23,0.08)] border border-border/50;
+  }
+  
+  .text-gradient-sunrise {
+    @apply bg-gradient-to-r from-[#FF5A3C] to-[#FF8C5A] bg-clip-text text-transparent;
+  }
+  
+  .btn-coral {
+    @apply bg-[#FF5A3C] text-white hover:bg-[#E54D2F] transition-colors duration-300 rounded-full px-6 py-3 font-medium;
+  }
+  
+  .btn-coral-outline {
+    @apply border-2 border-[#FF5A3C] text-[#FF5A3C] hover:bg-[#FF5A3C] hover:text-white transition-all duration-300 rounded-full px-6 py-3 font-medium;
+  }
+  
+  .grain-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.04;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  }
+  
+  .dark .grain-overlay {
+    mix-blend-mode: screen;
+    opacity: 0.03;
+  }
+  
+  .holographic-popup {
+    @apply relative overflow-hidden;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(246,247,249,0.98) 100%);
+    backdrop-filter: blur(20px);
+  }
+  
+  .dark .holographic-popup {
+    background: linear-gradient(135deg, rgba(15,20,30,0.95) 0%, rgba(25,30,45,0.98) 100%);
+  }
+  
+  .holographic-popup::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(255,90,60,0.1) 50%, transparent 60%);
+    animation: holographic-shimmer 3s ease-in-out infinite;
+  }
+  
+  @keyframes holographic-shimmer {
+    0%, 100% { transform: translateX(-100%) translateY(-100%); }
+    50% { transform: translateX(100%) translateY(100%); }
+  }
+  
+  .marker-pulse {
+    @apply relative;
+  }
+  
+  .marker-pulse::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: rgba(255, 90, 60, 0.4);
+    animation: pulse-ring 2s ease-out infinite;
+  }
+  
+  .marker-pulse::after {
+    content: '';
+    position: absolute;
+    inset: -16px;
+    border-radius: 50%;
+    background: rgba(255, 90, 60, 0.2);
+    animation: pulse-ring 2s ease-out infinite 0.5s;
+  }
+  
+  @keyframes pulse-ring {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(2); opacity: 0; }
+  }
+  
+  .skeleton-shimmer {
+    @apply relative overflow-hidden bg-muted;
+  }
+  
+  .skeleton-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    animation: shimmer 1.5s infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .animation-paused {
+    animation-play-state: paused;
+  }
+}
