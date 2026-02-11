@@ -10,7 +10,8 @@ import {
   AreaChart,
   Area,
 } from 'recharts';
-import { impactMetrics, monthlyVisitorData } from '@/data/nepalData';
+import { impactMetrics as staticImpactMetrics, monthlyVisitorData } from '@/data/nepalData';
+import { useImpactMetrics } from '@/hooks/useNepalData';
 import { TrendingUp, TrendingDown, Users, Leaf, Coins, Landmark } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -69,6 +70,8 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
   const ref = sectionRef || internalRef;
   const metricsRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<HTMLDivElement>(null);
+
+  const { data: impactMetrics = staticImpactMetrics } = useImpactMetrics();
 
   useEffect(() => {
     const section = ref.current;

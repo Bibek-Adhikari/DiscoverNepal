@@ -1,20 +1,26 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { destinations, categoryColors, provinces, type Destination, type DestinationCategory } from '@/data/nepalData';
+import {
+  destinations as staticDestinations,
+  categoryColors,
+  provinces as staticProvinces,
+  type Destination,
+  type DestinationCategory,
+} from '@/data/nepalData';
+import { useProvinces, useDestinations } from '@/hooks/useNepalData';
 import { X, Mountain, Thermometer, Calendar, Wind, Navigation } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Simplified map coordinates (relative positions for visual representation)
-const mapDestinations = destinations.map((dest) => ({
+// Helper for relative positions
+const getRelativePosition = (dest: Destination) => ({
   ...dest,
-  // Convert lat/lng to relative positions (simplified for visual map)
-  relX: ((dest.coordinates.lng - 80) / 8.5) * 100, // Nepal longitude range ~80-88.5
-  relY: 100 - ((dest.coordinates.lat - 26.5) / 3.5) * 100, // Nepal latitude range ~26.5-30
-}));
+  relX: ((dest.coordinates.lng - 80) / 8.5) * 100,
+  relY: 100 - ((dest.coordinates.lat - 26.5) / 3.5) * 100,
+});
 
 interface InteractiveMapProps {
   sectionRef?: React.RefObject<HTMLElement | null>;
@@ -27,6 +33,18 @@ export function InteractiveMap({ sectionRef }: InteractiveMapProps) {
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [activeCategory, setActiveCategory] = useState<DestinationCategory | 'all'>('all');
   const [isMapLoaded, setIsMapLoaded] = useState(false);
+
+  // Fetch data from Supabase
+  const { data: dbProvinces } = useProvinces();
+  const { data: dbDestinations } = useDestinations();
+
+  const provinces = (dbProvinces && dbProvinces.length > 0) ? dbProvinces : staticProvinces;
+  const destinations = (dbDestinations && dbDestinations.length > 0) ? dbDestinations : staticDestinations;
+
+  // Calculate relative positions dynamically
+  const mapDestinations = useMemo(() => {
+    return destinations.map(getRelativePosition);
+  }, [destinations]);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsMapLoaded(true), 500);

@@ -2,12 +2,13 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
-  provinces,
-  destinations,
+  provinces as staticProvinces,
+  destinations as staticDestinations,
   categoryColors,
   type Destination,
   type DestinationCategory,
 } from '@/data/nepalData';
+import { useProvinces, useDestinations } from '@/hooks/useNepalData';
 import {
   Select,
   SelectContent,
@@ -52,17 +53,20 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
   const [selectedDistrict, setSelectedDistrict] = useState<string>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [hoveredDestination, setHoveredDestination] = useState<Destination | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
+
+  // Fetch data from Supabase
+  const { data: dbProvinces, isLoading: isLoadingProvinces } = useProvinces();
+  const { data: dbDestinations, isLoading: isLoadingDestinations } = useDestinations();
+
+  // Use static data as fallback if DB is empty or loading
+  const provinces = (dbProvinces && dbProvinces.length > 0) ? dbProvinces : staticProvinces;
+  const destinations = (dbDestinations && dbDestinations.length > 0) ? dbDestinations : staticDestinations;
+
+  const isLoading = isLoadingProvinces || isLoadingDestinations;
 
   const internalRef = useRef<HTMLElement>(null);
   const ref = sectionRef || internalRef;
-
-  // Simulate loading
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(timer);
-  }, []);
 
   // Get districts based on selected province
   const availableDistricts = useMemo(() => {
