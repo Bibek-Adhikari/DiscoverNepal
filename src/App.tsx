@@ -16,7 +16,17 @@ import './App.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+import { supabase } from '@/lib/supabase';
+
 function App() {
+  useEffect(() => {
+    async function getPosts() {
+      const { data } = await supabase.from('posts').select()
+      console.log('Supabase Data:', data)
+    }
+    getPosts()
+  }, [])
+
   const territoryRef = useRef<HTMLElement>(null);
   const dashboardRef = useRef<HTMLElement>(null);
   const newsRef = useRef<HTMLElement>(null);
