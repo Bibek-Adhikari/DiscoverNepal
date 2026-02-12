@@ -30,12 +30,12 @@ export async function seedSupabaseData() {
           capital: province.capital,
           area: province.area,
           population: province.population
-        })
+        }, { onConflict: 'id' })
       
       if (pError) throw new Error(`Province ${province.name} error: ${pError.message}`)
 
       // Upsert districts for this province
-      if (province.districts) {
+      if (province.districts && province.districts.length > 0) {
         const districtsToInsert = province.districts.map(d => ({
           id: d.id,
           name: d.name,
@@ -47,7 +47,7 @@ export async function seedSupabaseData() {
 
         const { error: dError } = await supabase
           .from('districts')
-          .upsert(districtsToInsert)
+          .upsert(districtsToInsert, { onConflict: 'id' })
         
         if (dError) throw new Error(`Districts for ${province.name} error: ${dError.message}`)
       }
@@ -65,7 +65,9 @@ export async function seedSupabaseData() {
       best_months: d.bestMonths,
       description: d.description,
       cultural_significance: d.culturalSignificance,
-      image: d.image,
+      // Note: currently using local asset paths. 
+      // Replace with Supabase Storage public URLs if you move images there.
+      image: d.image, 
       coordinates: d.coordinates,
       weather_condition: d.weatherCondition,
       temperature: d.temperature
@@ -73,7 +75,7 @@ export async function seedSupabaseData() {
 
     const { error: destError } = await supabase
       .from('destinations')
-      .upsert(destinationsToInsert)
+      .upsert(destinationsToInsert, { onConflict: 'id' })
     
     if (destError) throw destError
 
@@ -88,7 +90,7 @@ export async function seedSupabaseData() {
         unit: m.unit,
         change: m.change,
         change_label: m.changeLabel // Map camelCase to snake_case
-      })))
+      })), { onConflict: 'id' })
     
     if (metricError) throw metricError
 
@@ -101,7 +103,7 @@ export async function seedSupabaseData() {
         month: d.month,
         visitors: d.visitors,
         carbon_offset: d.carbonOffset
-      })))
+      })), { onConflict: 'id' })
     
     if (visitorError) throw visitorError
 

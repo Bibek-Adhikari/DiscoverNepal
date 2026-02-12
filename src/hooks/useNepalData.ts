@@ -147,3 +147,94 @@ export function useMonthlyVisitorData() {
     }
   })
 }
+
+// Fetch news articles from Supabase
+export function useNews(destinationId?: string) {
+  return useQuery({
+    queryKey: ['news', destinationId],
+    queryFn: async () => {
+      let query = supabase
+        .from('news_articles')
+        .select('*')
+        .order('published_at', { ascending: false })
+      
+      if (destinationId && destinationId !== 'all') {
+        query = query.eq('destination_id', destinationId)
+      }
+      
+      const { data, error } = await query
+      if (error) throw error
+      
+      return data.map((a: any) => ({
+        id: a.id,
+        title: a.title,
+        description: a.description,
+        url: a.url,
+        publishedAt: a.published_at,
+        source: a.source,
+        imageUrl: a.image_url,
+        category: a.category,
+        destination_id: a.destination_id
+      }))
+    }
+  })
+}
+
+// Mutations for adding data
+export async function addDestination(destination: any) {
+  console.log('Inserting into destinations:', destination)
+  const { data, error } = await supabase
+    .from('destinations')
+    .insert([destination])
+    .select()
+  
+  if (error) {
+    console.error('Supabase error inserting destination:', error)
+    throw error
+  }
+  console.log('Successfully inserted destination:', data)
+  return data
+}
+
+/**
+ * Uploads an image to Supabase Storage and returns the public URL.
+ * @param file The file to upload.
+ * @param bucket The bucket name ('destinations' or 'articles').
+ */
+export async function uploadImage(file: File, bucket: 'destinations' | 'articles') {
+  console.log(`Starting upload to bucket "${bucket}":`, file.name)
+  const fileExt = file.name.split('.').pop()
+  const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`
+  const filePath = fileName
+
+  const { error: uploadError } = await supabase.storage
+    .from(bucket)
+    .upload(filePath, file)
+
+  if (uploadError) {
+    console.error(`Storage error uploading to "${bucket}":`, uploadError)
+    throw uploadError
+  }
+
+  const { data: { publicUrl } } = supabase.storage
+    .from(bucket)
+    .getPublicUrl(filePath)
+
+  console.log(`Successfully uploaded to "${bucket}". Public URL:`, publicUrl)
+  return publicUrl
+}
+
+export async function addNewsArticle(article: any) {
+  console.log('Inserting into news_articles:', article)
+  const { data, error } = await supabase
+    .from('news_articles')
+    .insert([article])
+    .select()
+  
+  if (error) {
+    console.error('Supabase error inserting article:', error)
+    throw error
+  }
+  console.log('Successfully inserted article:', data)
+  return data
+}

@@ -11,6 +11,7 @@ import { ImpactDashboard } from '@/sections/ImpactDashboard';
 import { InteractiveMap } from '@/sections/InteractiveMap';
 import { DestinationHighlights } from '@/sections/DestinationHighlights';
 import { PlanYourVisit } from '@/sections/PlanYourVisit';
+import { AdminDashboard } from '@/sections/AdminDashboard';
 import { Footer } from '@/sections/Footer';
 import { Toaster } from '@/components/ui/sonner';
 import './App.css';
@@ -25,6 +26,7 @@ function App() {
   const territoryRef = useRef<HTMLElement>(null);
   const dashboardRef = useRef<HTMLElement>(null);
   const newsRef = useRef<HTMLElement>(null);
+  const adminRef = useRef<HTMLElement>(null);
 
   // Global scroll snap for pinned sections
   useEffect(() => {
@@ -93,6 +95,20 @@ function App() {
     newsRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const scrollToAdmin = () => {
+    const element = adminRef.current || document.getElementById('contribute-section');
+    if (element) {
+      const headerOffset = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <ThemeProvider>
       <DataProvider>
@@ -101,7 +117,11 @@ function App() {
           <div className="grain-overlay" />
 
           {/* Header */}
-          <Header onExploreClick={scrollToTerritory} onDashboardClick={scrollToDashboard} />
+          <Header 
+            onExploreClick={scrollToTerritory} 
+            onDashboardClick={scrollToDashboard} 
+            onAdminClick={scrollToAdmin}
+          />
 
           {/* Main Content */}
           <main className="relative">
@@ -119,6 +139,9 @@ function App() {
 
             {/* Interactive Map - z-20 */}
             <InteractiveMap />
+
+            {/* Admin Dashboard - z-20 */}
+            <AdminDashboard sectionRef={adminRef} />
 
             {/* Destination Highlights - z-30+ */}
             <DestinationHighlights />

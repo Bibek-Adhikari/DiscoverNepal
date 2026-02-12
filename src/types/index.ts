@@ -47,3 +47,15 @@ export interface ImpactMetric {
   change: number
   changeLabel: string
 }
+
+export interface NewsArticle {
+  id?: string
+  title: string
+  description: string
+  url: string
+  publishedAt: string
+  source: string
+  imageUrl?: string
+  category?: string
+  destination_id?: string
+}

@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Moon, Sun, Menu, X, Mountain, MapPin, Compass } from 'lucide-react';
+import { Moon, Sun, Menu, X, Mountain, MapPin, Compass, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface HeaderProps {
   onExploreClick?: () => void;
   onDashboardClick?: () => void;
+  onAdminClick?: () => void;
 }
 
-export function Header({ onExploreClick, onDashboardClick }: HeaderProps) {
+export function Header({ onExploreClick, onDashboardClick, onAdminClick }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -25,6 +26,7 @@ export function Header({ onExploreClick, onDashboardClick }: HeaderProps) {
   const navLinks = [
     { label: 'Explore', icon: MapPin, onClick: onExploreClick },
     { label: 'Dashboard', icon: Compass, onClick: onDashboardClick },
+    { label: 'Contribute', icon: Plus, onClick: onAdminClick },
   ];
 
   return (

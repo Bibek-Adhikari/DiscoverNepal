@@ -7,7 +7,7 @@ import {
   type DestinationCategory,
 } from '@/data/nepalData';
 import { useData } from '@/contexts/DataContext';
-import { X, Mountain, Thermometer, Calendar, Wind, Navigation } from 'lucide-react';
+import { X, Mountain, Thermometer, Calendar, Wind, Navigation, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
@@ -247,102 +247,108 @@ export function InteractiveMap({ sectionRef }: InteractiveMapProps) {
 
         {/* Selected Destination Detail Panel */}
         {selectedDestination && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div className="relative w-full max-w-lg card-nepal overflow-hidden animate-in fade-in zoom-in duration-300">
-              {/* Close Button */}
+          <div 
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300"
+            onClick={() => setSelectedDestination(null)}
+          >
+            <div 
+              className="relative w-full max-w-lg card-nepal overflow-hidden shadow-2xl animate-in zoom-in duration-300"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button - Now outside the image for better visibility */}
               <button
                 onClick={() => setSelectedDestination(null)}
-                className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
+                className="absolute top-3 right-3 z-50 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center hover:bg-[#FF5A3C] hover:text-white transition-all shadow-lg group"
+                aria-label="Close details"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5 group-hover:scale-110 transition-transform" />
               </button>
 
               {/* Image */}
-              <div className="relative h-48">
+              <div className="relative h-56">
                 <img
                   src={selectedDestination.image}
                   alt={selectedDestination.name}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 
                 {/* Category Badge */}
                 <Badge
                   className="absolute top-4 left-4"
                   style={{
-                    backgroundColor: `${categoryColors[selectedDestination.category]}20`,
-                    color: categoryColors[selectedDestination.category],
-                    borderColor: `${categoryColors[selectedDestination.category]}40`,
+                    backgroundColor: `${categoryColors[selectedDestination.category]}`,
+                    color: '#fff',
                   }}
-                  variant="outline"
                 >
                   {selectedDestination.category}
                 </Badge>
 
                 {/* Title */}
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-xl font-bold text-white">{selectedDestination.name}</h3>
-                  <p className="text-sm text-white/80">
+                <div className="absolute bottom-4 left-6 right-6">
+                  <h3 className="text-2xl font-bold text-white mb-1">{selectedDestination.name}</h3>
+                  <div className="flex items-center gap-2 text-white/90 text-sm">
+                    <MapPin className="w-4 h-4 text-[#FF5A3C]" />
                     {provinces.find(p => p.id === selectedDestination.provinceId)?.name} Province
-                  </p>
+                  </div>
                 </div>
               </div>
 
               {/* Content */}
-              <div className="p-6">
-                <p className="text-muted-foreground mb-4">
+              <div className="p-6 sm:p-8 bg-card">
+                <p className="text-muted-foreground leading-relaxed mb-6">
                   {selectedDestination.description}
                 </p>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-8">
                   {selectedDestination.elevation && (
-                    <div className="bg-muted/50 rounded-lg p-3">
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                        <Mountain className="w-4 h-4" />
+                    <div className="bg-muted/30 hover:bg-muted/50 transition-colors rounded-xl p-4 border border-border/50">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-wider mb-1.5">
+                        <Mountain className="w-3.5 h-3.5 text-[#FF5A3C]" />
                         Elevation
                       </div>
-                      <div className="font-medium">{selectedDestination.elevation}</div>
+                      <div className="font-bold text-lg">{selectedDestination.elevation}</div>
                     </div>
                   )}
                   
-                  <div className="bg-muted/50 rounded-lg p-3">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                      <Thermometer className="w-4 h-4" />
+                  <div className="bg-muted/30 hover:bg-muted/50 transition-colors rounded-xl p-4 border border-border/50">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-wider mb-1.5">
+                      <Thermometer className="w-3.5 h-3.5 text-[#FF5A3C]" />
                       Temperature
                     </div>
-                    <div className="font-medium">{selectedDestination.temperature}°C</div>
+                    <div className="font-bold text-lg">{selectedDestination.temperature}°C</div>
                   </div>
                   
-                  <div className="bg-muted/50 rounded-lg p-3">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                      <Wind className="w-4 h-4" />
+                  <div className="bg-muted/30 hover:bg-muted/50 transition-colors rounded-xl p-4 border border-border/50">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-wider mb-1.5">
+                      <Wind className="w-3.5 h-3.5 text-[#FF5A3C]" />
                       Weather
                     </div>
-                    <div className="font-medium">{selectedDestination.weatherCondition}</div>
+                    <div className="font-bold text-lg">{selectedDestination.weatherCondition}</div>
                   </div>
                   
-                  <div className="bg-muted/50 rounded-lg p-3">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                      <Calendar className="w-4 h-4" />
+                  <div className="bg-muted/30 hover:bg-muted/50 transition-colors rounded-xl p-4 border border-border/50">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-wider mb-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-[#FF5A3C]" />
                       Best Time
                     </div>
-                    <div className="font-medium text-sm">
-                      {selectedDestination.bestMonths.slice(0, 3).join(', ')}
+                    <div className="font-bold text-sm leading-tight">
+                      {selectedDestination.bestMonths.join(', ')}
                     </div>
                   </div>
                 </div>
 
                 {/* Cultural Significance */}
-                <div className="border-t border-border/50 pt-4">
-                  <div className="text-xs text-muted-foreground mb-2">Cultural Significance</div>
-                  <p className="text-sm">{selectedDestination.culturalSignificance}</p>
+                <div className="bg-muted/20 rounded-xl p-4 border border-border/30 mb-8">
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider mb-2 font-semibold">Cultural Significance</div>
+                  <p className="text-sm leading-relaxed italic">&quot;{selectedDestination.culturalSignificance}&quot;</p>
                 </div>
 
                 {/* Action Button */}
-                <Button className="w-full mt-4 btn-coral">
-                  <Navigation className="w-4 h-4 mr-2" />
-                  Plan Visit
+                <Button className="w-full py-6 rounded-xl btn-coral text-lg font-bold shadow-coral/20 shadow-lg">
+                  <Navigation className="w-5 h-5 mr-3" />
+                  Plan Your Journey
                 </Button>
               </div>
             </div>
