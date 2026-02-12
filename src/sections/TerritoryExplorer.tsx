@@ -7,6 +7,7 @@ import {
   categoryColors,
   type Destination,
   type DestinationCategory,
+  type District,
 } from '@/data/nepalData';
 import { useProvinces, useDestinations } from '@/hooks/useNepalData';
 import {
@@ -69,13 +70,13 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
   const ref = sectionRef || internalRef;
 
   // Get districts based on selected province
-  const availableDistricts = useMemo(() => {
+  const availableDistricts = useMemo<District[]>(() => {
     if (selectedProvince === 'all') {
-      return provinces.flatMap((p) => p.districts);
+      return provinces.flatMap((p) => p.districts || []);
     }
     const province = provinces.find((p) => p.id === selectedProvince);
     return province?.districts || [];
-  }, [selectedProvince]);
+  }, [selectedProvince, provinces]);
 
   // Filter destinations
   const filteredDestinations = useMemo(() => {
@@ -190,7 +191,7 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Districts</SelectItem>
-              {availableDistricts.map((district) => (
+              {availableDistricts.filter(Boolean).map((district) => (
                 <SelectItem key={district.id} value={district.id}>
                   {district.name}
                 </SelectItem>
