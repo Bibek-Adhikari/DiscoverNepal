@@ -2,13 +2,11 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
-  destinations as staticDestinations,
   categoryColors,
-  provinces as staticProvinces,
   type Destination,
   type DestinationCategory,
 } from '@/data/nepalData';
-import { useProvinces, useDestinations } from '@/hooks/useNepalData';
+import { useData } from '@/contexts/DataContext';
 import { X, Mountain, Thermometer, Calendar, Wind, Navigation } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -34,12 +32,8 @@ export function InteractiveMap({ sectionRef }: InteractiveMapProps) {
   const [activeCategory, setActiveCategory] = useState<DestinationCategory | 'all'>('all');
   const [isMapLoaded, setIsMapLoaded] = useState(false);
 
-  // Fetch data from Supabase
-  const { data: dbProvinces } = useProvinces();
-  const { data: dbDestinations } = useDestinations();
-
-  const provinces = (dbProvinces && dbProvinces.length > 0) ? dbProvinces : staticProvinces;
-  const destinations = (dbDestinations && dbDestinations.length > 0) ? dbDestinations : staticDestinations;
+  // Get data from centralized DataContext
+  const { provinces, destinations } = useData();
 
   // Calculate relative positions dynamically
   const mapDestinations = useMemo(() => {

@@ -127,3 +127,23 @@ export function useImpactMetrics() {
     }
   })
 }
+
+// Fetch monthly visitor data
+export function useMonthlyVisitorData() {
+  return useQuery({
+    queryKey: ['monthly-visitor-data'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('monthly_visitor_data')
+        .select('*')
+        .order('id')
+      
+      if (error) throw error
+      return data.map((d: any) => ({
+        month: d.month,
+        visitors: d.visitors,
+        carbonOffset: d.carbon_offset
+      }))
+    }
+  })
+}

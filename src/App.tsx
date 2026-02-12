@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { DataProvider } from '@/contexts/DataContext';
 import { Header } from '@/components/Header';
 import { HeroSection } from '@/sections/HeroSection';
 import { NewsExplorer } from '@/sections/NewsExplorer';
@@ -16,7 +17,6 @@ import './App.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-import { supabase } from '@/lib/supabase';
 import { seedSupabaseData } from '@/lib/seedData';
 import { useState } from 'react';
 
@@ -113,68 +113,70 @@ function App() {
 
   return (
     <ThemeProvider>
-      <div className="relative min-h-screen bg-background">
-        {/* Grain Overlay */}
-        <div className="grain-overlay" />
+      <DataProvider>
+        <div className="relative min-h-screen bg-background">
+          {/* Grain Overlay */}
+          <div className="grain-overlay" />
 
-        {/* Dev Tool: Sync to Supabase */}
-        <div className="fixed bottom-4 right-20 z-[100]">
-          <button
-            onClick={handleSeed}
-            disabled={isSeeding}
-            className={`px-4 py-2 rounded-full text-xs font-mono border-2 transition-all ${
-              isSeeding 
-              ? 'bg-muted text-muted-foreground border-muted animate-pulse' 
-              : 'bg-background hover:bg-[#FF5A3C] hover:text-white border-[#FF5A3C] text-[#FF5A3C]'
-            }`}
-          >
-            {isSeeding ? 'Syncing...' : 'Sync Static Data to Supabase'}
-          </button>
+          {/* Dev Tool: Sync to Supabase */}
+          <div className="fixed bottom-4 right-20 z-[100]">
+            <button
+              onClick={handleSeed}
+              disabled={isSeeding}
+              className={`px-4 py-2 rounded-full text-xs font-mono border-2 transition-all ${
+                isSeeding 
+                ? 'bg-muted text-muted-foreground border-muted animate-pulse' 
+                : 'bg-background hover:bg-[#FF5A3C] hover:text-white border-[#FF5A3C] text-[#FF5A3C]'
+              }`}
+            >
+              {isSeeding ? 'Syncing...' : 'Sync Static Data to Supabase'}
+            </button>
+          </div>
+
+          {/* Header */}
+          <Header onExploreClick={scrollToTerritory} onDashboardClick={scrollToDashboard} />
+
+          {/* Main Content */}
+          <main className="relative">
+            {/* Hero Section - z-10 */}
+            <HeroSection onExploreClick={scrollToTerritory} onNewsClick={scrollToNews} />
+
+            {/* News Explorer - z-15 */}
+            <NewsExplorer sectionRef={newsRef} />
+
+            {/* Territory Explorer - z-20 */}
+            <TerritoryExplorer sectionRef={territoryRef} />
+
+            {/* Impact Dashboard - z-20 */}
+            <ImpactDashboard sectionRef={dashboardRef} />
+
+            {/* Interactive Map - z-20 */}
+            <InteractiveMap />
+
+            {/* Destination Highlights - z-30+ */}
+            <DestinationHighlights />
+
+            {/* Plan Your Visit - z-40 */}
+            <PlanYourVisit />
+
+            {/* Footer - z-50 */}
+            <Footer />
+          </main>
+
+          {/* Toast Notifications */}
+          <Toaster 
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(0, 0, 0, 0.1)',
+                borderRadius: '16px',
+              },
+            }}
+          />
         </div>
-
-        {/* Header */}
-        <Header onExploreClick={scrollToTerritory} onDashboardClick={scrollToDashboard} />
-
-        {/* Main Content */}
-        <main className="relative">
-          {/* Hero Section - z-10 */}
-          <HeroSection onExploreClick={scrollToTerritory} onNewsClick={scrollToNews} />
-
-          {/* News Explorer - z-15 */}
-          <NewsExplorer sectionRef={newsRef} />
-
-          {/* Territory Explorer - z-20 */}
-          <TerritoryExplorer sectionRef={territoryRef} />
-
-          {/* Impact Dashboard - z-20 */}
-          <ImpactDashboard sectionRef={dashboardRef} />
-
-          {/* Interactive Map - z-20 */}
-          <InteractiveMap />
-
-          {/* Destination Highlights - z-30+ */}
-          <DestinationHighlights />
-
-          {/* Plan Your Visit - z-40 */}
-          <PlanYourVisit />
-
-          {/* Footer - z-50 */}
-          <Footer />
-        </main>
-
-        {/* Toast Notifications */}
-        <Toaster 
-          position="bottom-right"
-          toastOptions={{
-            style: {
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(0, 0, 0, 0.1)',
-              borderRadius: '16px',
-            },
-          }}
-        />
-      </div>
+      </DataProvider>
     </ThemeProvider>
   );
 }

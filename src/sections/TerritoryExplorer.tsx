@@ -2,14 +2,12 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
-  provinces as staticProvinces,
-  destinations as staticDestinations,
   categoryColors,
   type Destination,
   type DestinationCategory,
   type District,
 } from '@/data/nepalData';
-import { useProvinces, useDestinations } from '@/hooks/useNepalData';
+import { useData } from '@/contexts/DataContext';
 import {
   Select,
   SelectContent,
@@ -56,15 +54,8 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
   const [hoveredDestination, setHoveredDestination] = useState<Destination | null>(null);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
 
-  // Fetch data from Supabase
-  const { data: dbProvinces, isLoading: isLoadingProvinces } = useProvinces();
-  const { data: dbDestinations, isLoading: isLoadingDestinations } = useDestinations();
-
-  // Use static data as fallback if DB is empty or loading
-  const provinces = (dbProvinces && dbProvinces.length > 0) ? dbProvinces : staticProvinces;
-  const destinations = (dbDestinations && dbDestinations.length > 0) ? dbDestinations : staticDestinations;
-
-  const isLoading = isLoadingProvinces || isLoadingDestinations;
+  // Get data from centralized DataContext
+  const { provinces, destinations, isLoading } = useData();
 
   const internalRef = useRef<HTMLElement>(null);
   const ref = sectionRef || internalRef;
