@@ -17,27 +17,9 @@ import './App.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-import { seedSupabaseData } from '@/lib/seedData';
-import { useState } from 'react';
-
 function App() {
-  const [isSeeding, setIsSeeding] = useState(false);
-
-  const handleSeed = async () => {
-    if (!confirm('This will upload all static data to Supabase. Continue?')) return;
-    setIsSeeding(true);
-    const result = await seedSupabaseData();
-    setIsSeeding(false);
-    if (result.success) {
-      alert('Success! All data migrated to Supabase.');
-    } else {
-      alert('Error seeding data: ' + result.error);
-    }
-  };
-
-  // No automatic check on mount to prevent double-firing in StrictMode
   useEffect(() => {
-    console.log('App initialized. Use the Sync button to push data to Supabase.');
+    console.log('App initialized.');
   }, []);
 
   const territoryRef = useRef<HTMLElement>(null);
@@ -117,21 +99,6 @@ function App() {
         <div className="relative min-h-screen bg-background">
           {/* Grain Overlay */}
           <div className="grain-overlay" />
-
-          {/* Dev Tool: Sync to Supabase */}
-          <div className="fixed bottom-4 right-20 z-[100]">
-            <button
-              onClick={handleSeed}
-              disabled={isSeeding}
-              className={`px-4 py-2 rounded-full text-xs font-mono border-2 transition-all ${
-                isSeeding 
-                ? 'bg-muted text-muted-foreground border-muted animate-pulse' 
-                : 'bg-background hover:bg-[#FF5A3C] hover:text-white border-[#FF5A3C] text-[#FF5A3C]'
-              }`}
-            >
-              {isSeeding ? 'Syncing...' : 'Sync Static Data to Supabase'}
-            </button>
-          </div>
 
           {/* Header */}
           <Header onExploreClick={scrollToTerritory} onDashboardClick={scrollToDashboard} />

@@ -124,7 +124,7 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
       ref={ref as React.RefObject<HTMLElement>}
       className="relative w-full py-20 lg:py-32 z-20 bg-background"
     >
-      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+      <div className="w-full px-2 sm:px-6 lg:px-8 xl:px-12">
         {/* Header */}
         <div className="text-center mb-12">
           <span className="font-mono text-xs tracking-[0.2em] text-[#FF5A3C] uppercase">
@@ -143,7 +143,7 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
         {/* Metrics Grid */}
         <div
           ref={metricsRef}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-2 mb-12"
         >
           {impactMetrics.map((metric) => {
             const Icon = metricIcons[metric.id as keyof typeof metricIcons];
@@ -195,7 +195,7 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
         {/* Chart Section */}
         <div
           ref={chartRef}
-          className="card-nepal p-6 lg:p-8"
+          className="card-nepal p-4 lg:p-8"
           style={{ opacity: 0 }}
         >
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
@@ -217,7 +217,7 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
             </div>
           </div>
 
-          <div className="h-[300px] lg:h-[400px]">
+          <div className="h-[350px] lg:h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={monthlyVisitorData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
@@ -238,15 +238,17 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
                 />
                 <YAxis
                   yAxisId="left"
-                  tick={{ fontSize: 12 }}
-                  stroke="rgba(0,0,0,0.2)"
+                  tick={{ fontSize: 10 }}
+                  width={35}
+                  stroke="rgba(0,0,0,0.1)"
                   tickFormatter={(value) => `${value / 1000}k`}
                 />
                 <YAxis
                   yAxisId="right"
                   orientation="right"
-                  tick={{ fontSize: 12 }}
-                  stroke="rgba(0,0,0,0.2)"
+                  tick={{ fontSize: 10 }}
+                  width={35}
+                  stroke="rgba(0,0,0,0.1)"
                 />
                 <Tooltip
                   contentStyle={{
@@ -293,7 +295,7 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
             { label: 'Community Projects', value: '89' },
             { label: 'Wildlife Corridors', value: '34' },
           ].map((stat, index) => (
-            <div key={index} className="text-center p-4">
+            <div key={index} className="text-center p-2 sm:p-4">
               <div className="text-2xl lg:text-3xl font-bold text-[#FF5A3C] font-['Space_Grotesk']">
                 {stat.value}
               </div>
