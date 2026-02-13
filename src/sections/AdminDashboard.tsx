@@ -130,7 +130,11 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
       setPlacePreview(null);
     } catch (error: any) {
       console.error('Error adding destination:', error);
-      toast.error('Failed to add destination: ' + error.message);
+      if (error.code === '23505') {
+        toast.error('This destination already exists!');
+      } else {
+        toast.error('Failed to add destination: ' + error.message);
+      }
     } finally {
       setIsSubmitting(false);
     }
