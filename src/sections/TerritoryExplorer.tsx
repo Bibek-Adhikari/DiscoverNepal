@@ -243,7 +243,7 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
                 </div>
               ))
             : filteredDestinations.map((destination) => {
-                const CategoryIcon = categoryIcons[destination.category];
+                const CategoryIcon = categoryIcons[destination.category] || MapPin;
                 return (
                   <div
                     key={destination.id}

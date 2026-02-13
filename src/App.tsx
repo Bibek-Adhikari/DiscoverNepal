@@ -153,12 +153,12 @@ function App() {
           {/* Toast Notifications */}
           <Toaster 
             position="bottom-right"
+            richColors
+            closeButton
             toastOptions={{
               style: {
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(0, 0, 0, 0.1)',
                 borderRadius: '16px',
+                backdropFilter: 'blur(10px)',
               },
             }}
           />

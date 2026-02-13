@@ -272,7 +272,7 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Place Name</label>
                       <Input 
-                        placeholder="e.g. Shey Phoksundo Lake" 
+                        placeholder="e.g. Satakshi Dham" 
                         value={placeName}
                         onChange={(e) => setPlaceName(e.target.value)}
                         required
@@ -282,7 +282,7 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Province</label>
                       <Input 
-                        placeholder="e.g. Gandaki" 
+                        placeholder="e.g. Koshi" 
                         value={provinceId}
                         onChange={(e) => setProvinceId(e.target.value)}
                         required
@@ -293,7 +293,7 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
                     <div className="space-y-2">
                       <label className="text-sm font-medium">District</label>
                       <Input 
-                        placeholder="e.g. Kaski" 
+                        placeholder="e.g. Jhapa" 
                         value={districtId}
                         onChange={(e) => setDistrictId(e.target.value)}
                         required

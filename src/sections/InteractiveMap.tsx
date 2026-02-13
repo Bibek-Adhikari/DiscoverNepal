@@ -37,7 +37,9 @@ export function InteractiveMap({ sectionRef }: InteractiveMapProps) {
 
   // Calculate relative positions dynamically
   const mapDestinations = useMemo(() => {
-    return destinations.map(getRelativePosition);
+    return destinations
+      .filter((dest) => dest.coordinates && typeof dest.coordinates.lat === 'number' && typeof dest.coordinates.lng === 'number')
+      .map(getRelativePosition);
   }, [destinations]);
 
   useEffect(() => {
