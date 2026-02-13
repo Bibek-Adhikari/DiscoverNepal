@@ -320,7 +320,7 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
       {/* Holographic Popup */}
       {hoveredDestination && (
         <div
-          className="fixed z-50 holographic-popup rounded-2xl shadow-2xl p-4 sm:p-5 w-72 sm:w-80 pointer-events-none"
+          className="fixed z-[100] holographic-popup rounded-2xl shadow-2xl p-4 sm:p-5 w-72 sm:w-80 pointer-events-none"
           style={{
             left: Math.min(Math.max(popupPosition.x - 144, 16), window.innerWidth - 320),
             top: Math.max(popupPosition.y - 260, 16),

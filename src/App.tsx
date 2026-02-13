@@ -128,9 +128,6 @@ function App() {
             {/* Hero Section - z-10 */}
             <HeroSection onExploreClick={scrollToTerritory} onNewsClick={scrollToNews} />
 
-            {/* News Explorer - z-15 */}
-            <NewsExplorer sectionRef={newsRef} />
-
             {/* Territory Explorer - z-20 */}
             <TerritoryExplorer sectionRef={territoryRef} />
 
@@ -145,7 +142,7 @@ function App() {
 
             {/* Destination Highlights - z-30+ */}
             <DestinationHighlights />
-
+       
             {/* Plan Your Visit - z-40 */}
             <PlanYourVisit />
 

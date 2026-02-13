@@ -35,6 +35,7 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
   // Place Form State
   const [placeName, setPlaceName] = useState('');
   const [provinceId, setProvinceId] = useState('');
+  const [districtId, setDistrictId] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<any>('Heritage Sites');
 
@@ -46,6 +47,16 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
     'Adventure Sports',
     'Cultural Villages',
   ];
+
+  // Derive available districts based on selected province
+  const availableDistricts = provinceId 
+    ? provinces.find(p => p.id === provinceId)?.districts || []
+    : [];
+
+  // Reset district when province changes
+  useEffect(() => {
+    setDistrictId('');
+  }, [provinceId]);
 
   // Article Form State
   const [articleTitle, setArticleTitle] = useState('');
@@ -99,7 +110,30 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
 
   const handleAddPlace = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Submitting new place:', { placeName, provinceId, category });
+    
+    // Normalize inputs
+    const normalizedProvince = provinceId.toLowerCase().trim();
+    const normalizedDistrict = districtId.toLowerCase().trim();
+
+    // Validate inputs
+    const isValidProvince = PROVINCES.includes(normalizedProvince);
+    const isValidDistrict = DISTRICTS.includes(normalizedDistrict);
+
+    if (!isValidProvince) {
+      toast.error(`Invalid Province: "${provinceId}"`, {
+        description: `Did you mean "${PROVINCES.find(p => p.startsWith(normalizedProvince.charAt(0))) || 'Bagmati'}"? Please check spelling.`
+      });
+      return;
+    }
+
+    if (!isValidDistrict) {
+      toast.error(`Invalid District: "${districtId}"`, {
+        description: `Did you mean "${DISTRICTS.find(d => d.startsWith(normalizedDistrict.charAt(0))) || 'Kathmandu'}"? Please check spelling.`
+      });
+      return;
+    }
+
+    console.log('Submitting new place:', { placeName, province: normalizedProvince, district: normalizedDistrict, category });
     setIsSubmitting(true);
     try {
       let imageUrl = '/placeholder-destination.jpg';
@@ -112,7 +146,8 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
       const newPlace = {
         id: placeName.toLowerCase().replace(/\s+/g, '-'),
         name: placeName,
-        province_id: provinceId,
+        province_id: normalizedProvince,
+        district_id: normalizedDistrict,
         description,
         category,
         image: imageUrl,
@@ -125,6 +160,8 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
       console.log('Destination added successfully!');
       toast.success('Destination added successfully! It will appear on the map in real-time.');
       setPlaceName('');
+      setProvinceId('');
+      setDistrictId('');
       setDescription('');
       setPlaceImage(null);
       setPlacePreview(null);
@@ -180,6 +217,21 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
     }
   };
 
+  const PROVINCES = [
+    "bagmati", "gandaki", "karnali", "koshi", 
+    "lumbini", "madhesh", "sudurpashchim"
+  ];
+
+  const DISTRICTS = [
+    "bardiya", "bhaktapur", "chitwan", "dailekh", "darchula", "dhankuta", 
+    "dhanusha", "dolakha", "dolpa", "doti", "gorkha", "gulmi", "humla", 
+    "ilam", "jhapa", "jumla", "kailali", "kanchanpur", "kaski", "kathmandu", 
+    "kavrepalanchok", "khotang", "lalitpur", "lamjung", "manang", "mugu", 
+    "mustang", "myagdi", "nuwakot", "palpa", "pyuthan", "rasuwa", 
+    "rupandehi", "sankhuwasabha", "solukhumbu", "sunsari", "surkhet", 
+    "tanahun", "taplejung"
+  ];
+
   return (
     <section
       id="contribute-section"
@@ -229,17 +281,25 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Province</label>
-                      <select 
-                        className="w-full px-3 py-2 rounded-xl bg-muted/50 border-0 focus:ring-2 focus:ring-[#FF5A3C]/20"
+                      <Input 
+                        placeholder="e.g. Gandaki" 
                         value={provinceId}
                         onChange={(e) => setProvinceId(e.target.value)}
                         required
-                      >
-                        <option value="">Select Province</option>
-                        {provinces.map(p => (
-                          <option key={p.id} value={p.id}>{p.name}</option>
-                        ))}
-                      </select>
+                        className="rounded-xl bg-muted/50 border-0"
+                      />
+                      <p className="text-xs text-muted-foreground">Type name (e.g. "Bagmati")</p>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">District</label>
+                      <Input 
+                        placeholder="e.g. Kaski" 
+                        value={districtId}
+                        onChange={(e) => setDistrictId(e.target.value)}
+                        required
+                        className="rounded-xl bg-muted/50 border-0"
+                      />
+                      <p className="text-xs text-muted-foreground">Type name (e.g. "Kathmandu")</p>
                     </div>
                   </div>
 
