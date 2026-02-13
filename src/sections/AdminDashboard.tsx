@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useData } from '@/contexts/DataContext';
+
 import { addDestination, addNewsArticle, uploadImage } from '@/hooks/useNepalData';
 import { toast } from 'sonner';
 
@@ -28,7 +28,6 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
   const internalRef = useRef<HTMLElement>(null);
   const ref = sectionRef || internalRef;
   const contentRef = useRef<HTMLDivElement>(null);
-  const { provinces } = useData();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -37,9 +36,7 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
   const [provinceId, setProvinceId] = useState('');
   const [districtId, setDistrictId] = useState('');
   const [description, setDescription] = useState('');
-  const [category] = useState<any>('Heritage Sites');
-
-
+  const [category] = useState<string>('Heritage Sites');
 
   // Reset district when province changes
   useEffect(() => {
@@ -204,21 +201,6 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
       setIsSubmitting(false);
     }
   };
-
-  const PROVINCES = [
-    "bagmati", "gandaki", "karnali", "koshi", 
-    "lumbini", "madhesh", "sudurpashchim"
-  ];
-
-  const DISTRICTS = [
-    "bardiya", "bhaktapur", "chitwan", "dailekh", "darchula", "dhankuta", 
-    "dhanusha", "dolakha", "dolpa", "doti", "gorkha", "gulmi", "humla", 
-    "ilam", "jhapa", "jumla", "kailali", "kanchanpur", "kaski", "kathmandu", 
-    "kavrepalanchok", "khotang", "lalitpur", "lamjung", "manang", "mugu", 
-    "mustang", "myagdi", "nuwakot", "palpa", "pyuthan", "rasuwa", 
-    "rupandehi", "sankhuwasabha", "solukhumbu", "sunsari", "surkhet", 
-    "tanahun", "taplejung"
-  ];
 
   return (
     <section
@@ -434,3 +416,18 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
     </section>
   );
 }
+
+const PROVINCES = [
+  "bagmati", "gandaki", "karnali", "koshi", 
+  "lumbini", "madhesh", "sudurpashchim"
+];
+
+const DISTRICTS = [
+  "bardiya", "bhaktapur", "chitwan", "dailekh", "darchula", "dhankuta", 
+  "dhanusha", "dolakha", "dolpa", "doti", "gorkha", "gulmi", "humla", 
+  "ilam", "jhapa", "jumla", "kailali", "kanchanpur", "kaski", "kathmandu", 
+  "kavrepalanchok", "khotang", "lalitpur", "lamjung", "manang", "mugu", 
+  "mustang", "myagdi", "nuwakot", "palpa", "pyuthan", "rasuwa", 
+  "rupandehi", "sankhuwasabha", "solukhumbu", "sunsari", "surkhet", 
+  "tanahun", "taplejung"
+];
