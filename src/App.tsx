@@ -5,7 +5,7 @@ import { ThemeProvider } from '@/contexts/ThemeContext';
 import { DataProvider } from '@/contexts/DataContext';
 import { Header } from '@/components/Header';
 import { HeroSection } from '@/sections/HeroSection';
-import { NewsExplorer } from '@/sections/NewsExplorer';
+
 import { TerritoryExplorer } from '@/sections/TerritoryExplorer';
 import { ImpactDashboard } from '@/sections/ImpactDashboard';
 import { InteractiveMap } from '@/sections/InteractiveMap';

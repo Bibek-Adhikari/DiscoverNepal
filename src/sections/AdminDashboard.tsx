@@ -37,21 +37,9 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
   const [provinceId, setProvinceId] = useState('');
   const [districtId, setDistrictId] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState<any>('Heritage Sites');
+  const [category] = useState<any>('Heritage Sites');
 
-  const categories = [
-    'Heritage Sites',
-    'Trekking Routes',
-    'Wildlife',
-    'Spiritual Centers',
-    'Adventure Sports',
-    'Cultural Villages',
-  ];
 
-  // Derive available districts based on selected province
-  const availableDistricts = provinceId 
-    ? provinces.find(p => p.id === provinceId)?.districts || []
-    : [];
 
   // Reset district when province changes
   useEffect(() => {
