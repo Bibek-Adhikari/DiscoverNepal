@@ -393,7 +393,7 @@ export function PlanYourVisit() {
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
             <div className="relative grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
-              {STATS.map((stat, index) => (
+              {STATS.map((stat) => (
                 <div 
                   key={stat.label} 
                   className="text-center group"

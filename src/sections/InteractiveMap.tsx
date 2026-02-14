@@ -375,7 +375,7 @@ export function InteractiveMap({ sectionRef }: InteractiveMapProps) {
             </div>
 
             {/* Destination Markers */}
-            {isMapLoaded && filteredDestinations.map((dest, index) => (
+            {isMapLoaded && filteredDestinations.map((dest) => (
               <button
                 key={dest.id}
                 className="destination-marker absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A3C] focus-visible:ring-offset-2 rounded-full"
