@@ -69,6 +69,7 @@ export function Header({ onExploreClick, onDashboardClick, onAdminClick }: Heade
                 {link.label}
               </Button>
             ))}
+            
           </nav>
 
           {/* Right Actions */}
