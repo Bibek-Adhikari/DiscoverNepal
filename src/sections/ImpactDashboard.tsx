@@ -54,7 +54,7 @@ function AnimatedCounter({ value, duration = 2 }: { value: number; duration?: nu
           }
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.2 }
     );
 
     observer.observe(el);
@@ -92,7 +92,7 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
           ease: 'power2.out',
           scrollTrigger: {
             trigger: metrics,
-            start: 'top 85%',
+            start: 'top 90%',
             toggleActions: 'play none none reverse',
           },
         }
@@ -109,7 +109,25 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
           ease: 'power2.out',
           scrollTrigger: {
             trigger: chart,
-            start: 'top 85%',
+            start: 'top 90%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      // Bottom stats grid animation
+      gsap.fromTo(
+        '.additional-stats > div',
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.additional-stats',
+            start: 'top 95%',
             toggleActions: 'play none none reverse',
           },
         }
@@ -195,29 +213,29 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
         {/* Chart Section */}
         <div
           ref={chartRef}
-          className="card-nepal p-4 lg:p-8"
+          className="card-nepal p-0 sm:p-4 lg:p-8 overflow-hidden"
           style={{ opacity: 0 }}
         >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-semibold">Visitor Trends & Carbon Offset</h3>
-              <p className="text-sm text-muted-foreground">
-                Monthly visitor numbers and corresponding carbon footprint offset
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between p-4 sm:p-0 mb-6 gap-4">
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold leading-tight text-gradient-sunrise sm:text-foreground">Visitor Trends & Carbon Offset</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Monthly visitor numbers and carbon offset
               </p>
             </div>
-            <div className="flex items-center gap-4 mt-4 sm:mt-0">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-[#FF5A3C]" />
-                <span className="text-xs text-muted-foreground">Visitors</span>
+                <div className="w-2.5 h-2.5 rounded-full bg-[#FF5A3C]" />
+                <span className="text-[10px] sm:text-xs text-muted-foreground font-medium">Visitors</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-green-500" />
-                <span className="text-xs text-muted-foreground">Carbon Offset (tons)</span>
+                <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                <span className="text-[10px] sm:text-xs text-muted-foreground font-medium">Carbon (tons)</span>
               </div>
             </div>
           </div>
 
-          <div className="h-[350px] lg:h-[400px]">
+          <div className="h-[600px] sm:h-[400px] lg:h-[450px] w-full mt-2">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={monthlyVisitorData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
@@ -233,21 +251,21 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
                 <XAxis
                   dataKey="month"
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 10 }}
                   stroke="rgba(0,0,0,0.2)"
                 />
                 <YAxis
                   yAxisId="left"
-                  tick={{ fontSize: 10 }}
-                  width={35}
+                  tick={{ fontSize: 9 }}
+                  width={30}
                   stroke="rgba(0,0,0,0.1)"
                   tickFormatter={(value) => `${value / 1000}k`}
                 />
                 <YAxis
                   yAxisId="right"
                   orientation="right"
-                  tick={{ fontSize: 10 }}
-                  width={35}
+                  tick={{ fontSize: 9 }}
+                  width={30}
                   stroke="rgba(0,0,0,0.1)"
                 />
                 <Tooltip
@@ -288,7 +306,7 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
         </div>
 
         {/* Additional Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+        <div className="additional-stats grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
           {[
             { label: 'Local Guides Employed', value: '2,450+' },
             { label: 'Heritage Sites Protected', value: '127' },

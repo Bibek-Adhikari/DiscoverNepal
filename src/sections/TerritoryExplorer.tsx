@@ -71,6 +71,7 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(6);
 
   const { provinces, destinations, isLoading } = useData();
 
@@ -104,7 +105,13 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
   // Reset district when province changes
   useEffect(() => {
     setSelectedDistrict('all');
+    setVisibleCount(6); // Reset limit when province changes
   }, [selectedProvince]);
+
+  // Reset visible count when other filters change
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [selectedDistrict, selectedCategory]);
 
   // Scroll animation with staggered grid items
   useEffect(() => {
@@ -485,7 +492,7 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
                   </div>
                 </div>
               ))
-            : filteredDestinations.map((destination) => {
+            : filteredDestinations.slice(0, visibleCount).map((destination) => {
                 const CategoryIcon = categoryIcons[destination.category] || MapPin;
                 const isHovered = hoveredDestination?.id === destination.id;
                 
@@ -574,6 +581,20 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
                 );
               })}
         </div>
+
+        {/* See More Button */}
+        {!isLoading && filteredDestinations.length > visibleCount && (
+          <div className="mt-12 text-center">
+            <Button
+              onClick={() => setVisibleCount(prev => prev + 4)}
+              variant="outline"
+              className="group h-12 px-8 rounded-full border-2 border-border hover:border-[#FF5A3C]/30 hover:bg-[#FF5A3C]/5 text-sm font-semibold transition-all duration-300"
+            >
+              See More Destinations
+              <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </div>
+        )}
 
         {/* Empty State */}
         {!isLoading && filteredDestinations.length === 0 && (
