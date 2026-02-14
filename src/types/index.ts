@@ -37,6 +37,7 @@ export interface Destination {
   coordinates: { lat: number; lng: number }
   weatherCondition?: string
   temperature?: number
+  createdAt?: string
 }
 
 export interface ImpactMetric {

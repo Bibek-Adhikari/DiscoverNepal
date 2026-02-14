@@ -11,6 +11,7 @@ import { ImpactDashboard } from '@/sections/ImpactDashboard';
 import { InteractiveMap } from '@/sections/InteractiveMap';
 import { DestinationHighlights } from '@/sections/DestinationHighlights';
 import { PlanYourVisit } from '@/sections/PlanYourVisit';
+import { RecentDiscoveries } from '@/sections/RecentDiscoveries';
 import { AdminDashboard } from '@/sections/AdminDashboard';
 import { Footer } from '@/sections/Footer';
 import { Toaster } from '@/components/ui/sonner';
@@ -130,6 +131,9 @@ function App() {
 
             {/* Territory Explorer - z-20 */}
             <TerritoryExplorer sectionRef={territoryRef} />
+
+            {/* Recent Discoveries - z-20 */}
+            <RecentDiscoveries />
 
             {/* Impact Dashboard - z-20 */}
             <ImpactDashboard sectionRef={dashboardRef} />

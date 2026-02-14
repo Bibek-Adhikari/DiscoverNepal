@@ -36,6 +36,7 @@ import {
   List,
   ArrowRight,
   Sparkles,
+  Clock,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -70,6 +71,7 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
   const [hoveredDestination, setHoveredDestination] = useState<Destination | null>(null);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'name'>('newest');
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(6);
 
@@ -89,15 +91,30 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
     return province?.districts || [];
   }, [selectedProvince, provinces]);
 
-  // Filter destinations
+  // Filter and Sort destinations
   const filteredDestinations = useMemo(() => {
-    return destinations.filter((dest) => {
+    let results = destinations.filter((dest) => {
       const provinceMatch = selectedProvince === 'all' || dest.provinceId === selectedProvince;
       const districtMatch = selectedDistrict === 'all' || dest.districtId === selectedDistrict;
       const categoryMatch = selectedCategory === 'all' || dest.category === selectedCategory;
       return provinceMatch && districtMatch && categoryMatch;
     });
-  }, [selectedProvince, selectedDistrict, selectedCategory, destinations]);
+
+    // Apply sorting
+    return [...results].sort((a, b) => {
+      if (sortBy === 'newest') {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      }
+      if (sortBy === 'oldest') {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : Infinity;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : Infinity;
+        return dateA - dateB;
+      }
+      return a.name.localeCompare(b.name);
+    });
+  }, [selectedProvince, selectedDistrict, selectedCategory, destinations, sortBy]);
 
   // Check if any filters are active
   const hasActiveFilters = selectedProvince !== 'all' || selectedDistrict !== 'all' || selectedCategory !== 'all';
@@ -131,7 +148,7 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
           scrollTrigger: {
             trigger: section,
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
           },
         }
       );
@@ -149,7 +166,7 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
           scrollTrigger: {
             trigger: section,
             start: 'top 75%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
           },
         }
       );
@@ -295,7 +312,7 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
 
             {/* Category Select */}
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-[200px] bg-background/80 backdrop-blur-sm border-2 border-border hover:border-[#FF5A3C]/30 transition-all">
+              <SelectTrigger className="w-[180px] bg-background/80 backdrop-blur-sm border-2 border-border hover:border-[#FF5A3C]/30 transition-all">
                 <Tent className="w-4 h-4 mr-2 text-[#FF5A3C]" />
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
@@ -306,6 +323,19 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
                     {category}
                   </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+
+            {/* Sort Select */}
+            <Select value={sortBy} onValueChange={(val: any) => setSortBy(val)}>
+              <SelectTrigger className="w-[160px] bg-background/80 backdrop-blur-sm border-2 border-border hover:border-[#FF5A3C]/30 transition-all">
+                <Clock className="w-4 h-4 mr-2 text-[#FF5A3C]" />
+                <SelectValue placeholder="Sort By" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="oldest">Oldest First</SelectItem>
+                <SelectItem value="name">Name (A-Z)</SelectItem>
               </SelectContent>
             </Select>
 
@@ -408,6 +438,18 @@ export function TerritoryExplorer({ sectionRef }: TerritoryExplorerProps) {
                         {category}
                       </SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+
+                <Select value={sortBy} onValueChange={(val: any) => setSortBy(val)}>
+                  <SelectTrigger>
+                    <Clock className="w-4 h-4 mr-2 text-[#FF5A3C]" />
+                    <SelectValue placeholder="Sort By" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Newest First</SelectItem>
+                    <SelectItem value="oldest">Oldest First</SelectItem>
+                    <SelectItem value="name">Name (A-Z)</SelectItem>
                   </SelectContent>
                 </Select>
 

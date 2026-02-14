@@ -39,51 +39,63 @@ export function HeroSection({ onExploreClick, onNewsClick }: HeroSectionProps) {
 
     if (!section || !content || !bg) return;
 
-    const ctx = gsap.context(() => {
-      // Auto-play entrance animation on load
-      const loadTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    let ctx: gsap.Context;
+    const timer = setTimeout(() => {
+      ctx = gsap.context(() => {
+        // Forced visibility safety catch
+        const animElements = [
+          bg,
+          '.hero-badge',
+          '.hero-title',
+          '.hero-subtitle',
+          '.hero-cta',
+          '.hero-stats'
+        ];
+        gsap.set(animElements, { visibility: 'visible', opacity: 1 });
 
-      // Background fade in with scale
-      loadTl.fromTo(bg, { opacity: 0, scale: 1.1 }, { opacity: 1, scale: 1, duration: 1.5 }, 0);
+        // Auto-play entrance animation on load
+        const loadTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      // Content entrance
-      loadTl.fromTo(
-        content.querySelector('.hero-badge'),
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8 },
-        0.3
-      );
+        // Background fade in with scale
+        loadTl.fromTo(bg, { opacity: 0, scale: 1.1 }, { opacity: 1, scale: 1, duration: 1.5 }, 0);
 
-      loadTl.fromTo(
-        content.querySelector('.hero-title'),
-        { y: 60, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1 },
-        0.5
-      );
+        // Content entrance
+        loadTl.from(
+          content.querySelector('.hero-badge'),
+          { y: 30, opacity: 0, duration: 0.8 },
+          0.3
+        );
 
-      loadTl.fromTo(
-        content.querySelector('.hero-subtitle'),
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8 },
-        0.7
-      );
+        loadTl.from(
+          content.querySelector('.hero-title'),
+          { y: 60, opacity: 0, duration: 1 },
+          0.5
+        );
 
-      loadTl.fromTo(
-        content.querySelector('.hero-cta'),
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8 },
-        0.9
-      );
+        loadTl.from(
+          content.querySelector('.hero-subtitle'),
+          { y: 30, opacity: 0, duration: 0.8 },
+          0.7
+        );
 
-      loadTl.fromTo(
-        content.querySelector('.hero-stats'),
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8 },
-        1.1
-      );
-    }, section);
+        loadTl.from(
+          content.querySelector('.hero-cta'),
+          { y: 30, opacity: 0, duration: 0.8 },
+          0.9
+        );
 
-    return () => ctx.revert();
+        loadTl.from(
+          content.querySelector('.hero-stats'),
+          { y: 40, opacity: 0, duration: 0.8 },
+          1.1
+        );
+      }, section);
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      ctx?.revert();
+    };
   }, []);
 
   return (
@@ -92,7 +104,7 @@ export function HeroSection({ onExploreClick, onNewsClick }: HeroSectionProps) {
       className="relative w-full min-h-screen overflow-hidden z-10"
     >
       {/* Animated Background Slideshow */}
-      <div ref={bgRef} className="absolute inset-0 w-full h-full" style={{ opacity: 0 }}>
+      <div ref={bgRef} className="absolute inset-0 w-full h-full">
         {slides.map((slide, index) => (
           <div
             key={index}
@@ -120,7 +132,7 @@ export function HeroSection({ onExploreClick, onNewsClick }: HeroSectionProps) {
         {/* Content Wrapper */}
         <div className="flex-1 flex flex-col items-center justify-center w-full mb-8">
           {/* Badge */}
-          <div className="hero-badge mb-4 sm:mb-6" style={{ opacity: 0 }}>
+          <div className="hero-badge mb-4 sm:mb-6">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs sm:text-sm font-mono tracking-wider uppercase">
               <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-[#FF5A3C]" />
               Discover the Himalayas
@@ -130,7 +142,6 @@ export function HeroSection({ onExploreClick, onNewsClick }: HeroSectionProps) {
           {/* Title */}
           <h1
             className="hero-title text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-tighter font-['Space_Grotesk'] text-center"
-            style={{ opacity: 0 }}
           >
             <span className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
               {slides[currentSlide].title}
@@ -140,7 +151,6 @@ export function HeroSection({ onExploreClick, onNewsClick }: HeroSectionProps) {
           {/* Subtitle */}
           <p
             className="hero-subtitle mt-4 sm:mt-6 text-lg sm:text-xl md:text-2xl text-muted-foreground text-center max-w-xl"
-            style={{ opacity: 0 }}
           >
             {slides[currentSlide].subtitle}
           </p>
@@ -148,7 +158,6 @@ export function HeroSection({ onExploreClick, onNewsClick }: HeroSectionProps) {
           {/* CTA Buttons */}
           <div
             className="hero-cta mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4"
-            style={{ opacity: 0 }}
           >
             <Button
               size="lg"
@@ -188,7 +197,6 @@ export function HeroSection({ onExploreClick, onNewsClick }: HeroSectionProps) {
         {/* Stats Bar */}
         <div
           className="hero-stats w-full"
-          style={{ opacity: 0 }}
         >
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-black/10 backdrop-blur-md border border-white/10">

@@ -340,26 +340,45 @@ export function NewsExplorer({ sectionRef }: NewsExplorerProps) {
 
     if (!section || !content) return;
 
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        content.children,
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
+    let ctx: gsap.Context;
+    const timer = setTimeout(() => {
+      ctx = gsap.context(() => {
+        // Clear existing ScrollTriggers
+        ScrollTrigger.getAll().forEach(t => {
+          if (t.trigger === section) t.kill();
+        });
+
+        // Forced visibility safety catch - select all elements that should be animated
+        const animElements = [
+          '.news-header',
+          '.news-search',
+          '.news-results-count',
+          '.news-grid',
+          '.news-load-more'
+        ];
+        gsap.set(animElements, { visibility: 'visible', opacity: 1 });
+
+        gsap.from(content.children, {
+          y: 30,
+          opacity: 0,
           duration: 0.8,
           stagger: 0.1,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: section,
-            start: 'top 80%',
-            toggleActions: 'play none none reverse',
+            start: 'top 85%',
+            toggleActions: 'play none none none',
           },
-        }
-      );
-    }, section);
+        });
 
-    return () => ctx.revert();
+        ScrollTrigger.refresh();
+      }, section);
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      ctx?.revert();
+    };
   }, [ref]);
 
   // Filter articles based on search and filters
@@ -416,7 +435,7 @@ export function NewsExplorer({ sectionRef }: NewsExplorerProps) {
     >
       <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12" ref={contentRef}>
         {/* Header */}
-        <div className="text-center mb-12" style={{ opacity: 0 }}>
+        <div className="news-header text-center mb-12">
           <span className="font-mono text-xs tracking-[0.2em] text-[#FF5A3C] uppercase">
             Stay Informed
           </span>
@@ -431,7 +450,7 @@ export function NewsExplorer({ sectionRef }: NewsExplorerProps) {
         </div>
 
         {/* Search & Filter Bar */}
-        <div className="max-w-4xl mx-auto mb-10" style={{ opacity: 0 }}>
+        <div className="news-search max-w-4xl mx-auto mb-10">
           <div className="card-nepal p-4 sm:p-6">
             {/* Search Input */}
             <div className="flex flex-col sm:flex-row gap-3 mb-4">
@@ -515,7 +534,7 @@ export function NewsExplorer({ sectionRef }: NewsExplorerProps) {
         </div>
 
         {/* Results Count */}
-        <div className="max-w-4xl mx-auto mb-6" style={{ opacity: 0 }}>
+        <div className="news-results-count max-w-4xl mx-auto mb-6">
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">
               Found <span className="font-semibold text-foreground">{filteredArticles.length}</span> articles
@@ -528,7 +547,7 @@ export function NewsExplorer({ sectionRef }: NewsExplorerProps) {
         </div>
 
         {/* News Grid */}
-        <div className="max-w-4xl mx-auto grid gap-4" style={{ opacity: 0 }}>
+        <div className="news-grid max-w-4xl mx-auto grid gap-4">
           {isLoading ? (
             // Loading Skeletons
             Array.from({ length: 4 }).map((_, i) => (
@@ -609,7 +628,7 @@ export function NewsExplorer({ sectionRef }: NewsExplorerProps) {
 
         {/* Load More Button */}
         {!isLoading && filteredArticles.length > 0 && (
-          <div className="text-center mt-8" style={{ opacity: 0 }}>
+          <div className="news-load-more text-center mt-8">
             <Button variant="outline" className="rounded-full px-8">
               Load More Articles
             </Button>

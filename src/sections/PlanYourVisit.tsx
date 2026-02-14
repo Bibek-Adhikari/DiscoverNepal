@@ -110,7 +110,7 @@ export function PlanYourVisit() {
           scrollTrigger: {
             trigger: section,
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
           },
         }
       );
@@ -129,7 +129,7 @@ export function PlanYourVisit() {
             scrollTrigger: {
               trigger: imageRef.current,
               start: 'top 85%',
-              toggleActions: 'play none none reverse',
+              toggleActions: 'play none none none',
             },
           }
         );
@@ -163,7 +163,7 @@ export function PlanYourVisit() {
             scrollTrigger: {
               trigger: cardsRef.current,
               start: 'top 80%',
-              toggleActions: 'play none none reverse',
+              toggleActions: 'play none none none',
             },
           }
         );
@@ -184,7 +184,7 @@ export function PlanYourVisit() {
             scrollTrigger: {
               trigger: statsRef.current,
               start: 'top 85%',
-              toggleActions: 'play none none reverse',
+              toggleActions: 'play none none none',
             },
           }
         );
@@ -204,7 +204,7 @@ export function PlanYourVisit() {
               scrollTrigger: {
                 trigger: stat,
                 start: 'top 85%',
-                toggleActions: 'play none none reverse',
+                toggleActions: 'play none none none',
               },
               onUpdate: function() {
                 const current = Math.round(this.targets()[0].val);

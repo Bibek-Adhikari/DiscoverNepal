@@ -165,7 +165,7 @@ export function DestinationHighlights() {
             scrollTrigger: {
               trigger: section,
               start: 'top 80%',
-              toggleActions: 'play none none reverse',
+              toggleActions: 'play none none none',
             },
           }
         );

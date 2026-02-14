@@ -79,63 +79,78 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
 
     if (!section || !metrics || !chart) return;
 
-    const ctx = gsap.context(() => {
-      // Metrics animation
-      gsap.fromTo(
-        metrics.children,
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: metrics,
-            start: 'top 90%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
+    let ctx: gsap.Context;
+    const timer = setTimeout(() => {
+      ctx = gsap.context(() => {
+        // Clear existing ScrollTriggers
+        ScrollTrigger.getAll().forEach(t => {
+          if (t.trigger === section) t.kill();
+        });
 
-      // Chart animation
-      gsap.fromTo(
-        chart,
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
+        // Forced visibility safety catch
+        gsap.set(['.impact-header', metrics, chart, '.additional-stats'], { 
+          visibility: 'visible', 
+          opacity: 1 
+        });
+
+        // Coordinate everything into a single timeline for the section
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 90%', // Trigger earlier for better UX
+            toggleActions: 'play none none none',
+          }
+        });
+
+        // 1. Header animation
+        tl.from('.impact-header', {
+          y: 30,
+          opacity: 0,
           duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: chart,
-            start: 'top 90%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
+          ease: 'power2.out'
+        });
 
-      // Bottom stats grid animation
-      gsap.fromTo(
-        '.additional-stats > div',
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
+        // 2. Metrics stagger
+        const metricItems = gsap.utils.toArray(metrics.children);
+        if (metricItems.length > 0) {
+          tl.from(metricItems, {
+            y: 30,
+            opacity: 0,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: 'power2.out'
+          }, '-=0.4');
+        }
+
+        // 3. Chart entrance
+        tl.from(chart, {
+          y: 40,
+          opacity: 0,
           duration: 0.8,
-          stagger: 0.1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: '.additional-stats',
-            start: 'top 95%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
-    }, section);
+          ease: 'power2.out'
+        }, '-=0.4');
 
-    return () => ctx.revert();
-  }, [ref]);
+        // 4. Additional stats
+        const additionalStats = gsap.utils.toArray('.additional-stats > div');
+        if (additionalStats.length > 0) {
+          tl.from(additionalStats, {
+            y: 20,
+            opacity: 0,
+            duration: 0.5,
+            stagger: 0.05,
+            ease: 'power2.out'
+          }, '-=0.5');
+        }
+
+        ScrollTrigger.refresh();
+      }, section);
+    }, 150);
+
+    return () => {
+      clearTimeout(timer);
+      ctx?.revert();
+    };
+  }, [ref, impactMetrics, monthlyVisitorData]);
 
   return (
     <section
@@ -144,7 +159,7 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
     >
       <div className="w-full px-2 sm:px-6 lg:px-8 xl:px-12">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="impact-header text-center mb-12">
           <span className="font-mono text-xs tracking-[0.2em] text-[#FF5A3C] uppercase">
             Impact Dashboard
           </span>
@@ -214,7 +229,6 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
         <div
           ref={chartRef}
           className="card-nepal p-0 sm:p-4 lg:p-8 overflow-hidden"
-          style={{ opacity: 0 }}
         >
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between p-4 sm:p-0 mb-6 gap-4">
             <div className="space-y-1">

@@ -66,7 +66,8 @@ export function useDestinations(category?: string) {
         image: d.image,
         coordinates: d.coordinates,
         weatherCondition: d.weather_condition,
-        temperature: d.temperature
+        temperature: d.temperature,
+        createdAt: d.created_at
       }))
     }
   })
@@ -98,11 +99,66 @@ export function useDestination(id: string) {
         image: data.image,
         coordinates: data.coordinates,
         weatherCondition: data.weather_condition,
-        temperature: data.temperature
+        temperature: data.temperature,
+        createdAt: data.created_at
       }
     },
     enabled: !!id
   })
+}
+
+// Fetch recently added destinations
+export function useRecentDestinations(limit: number = 4) {
+  return useQuery({
+    queryKey: ['recent-destinations', limit],
+    queryFn: async (): Promise<Destination[]> => {
+      const { data, error } = await supabase
+        .from('destinations')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(limit)
+
+      if (error) {
+        console.error('Error fetching recent destinations:', error)
+        throw error
+      }
+
+      if (data && data.length > 0) {
+        console.log('Recent fetch success:', data.length, 'items');
+        return data.map((d: any) => transformDestination(d))
+      }
+
+      console.warn('Sorted query returned no data, falling back to unordered fetch.')
+      const { data: fallbackData, error: fallbackError } = await supabase
+        .from('destinations')
+        .select('*')
+        .limit(limit)
+      
+      if (fallbackError) throw fallbackError
+      console.log('Fallback fetch success:', fallbackData?.length, 'items');
+      return fallbackData.map((d: any) => transformDestination(d))
+    }
+  })
+}
+
+// Helper to transform snake_case to camelCase
+function transformDestination(d: any): Destination {
+  return {
+    id: d.id,
+    name: d.name,
+    provinceId: d.province_id,
+    districtId: d.district_id,
+    category: d.category,
+    elevation: d.elevation,
+    bestMonths: d.best_months,
+    description: d.description,
+    culturalSignificance: d.cultural_significance,
+    image: d.image,
+    coordinates: d.coordinates,
+    weatherCondition: d.weather_condition,
+    temperature: d.temperature,
+    createdAt: d.created_at
+  }
 }
 
 // Fetch impact metrics

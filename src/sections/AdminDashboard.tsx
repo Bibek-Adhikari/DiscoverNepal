@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { 
@@ -30,6 +31,7 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
   const contentRef = useRef<HTMLDivElement>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
   // Place Form State
   const [placeName, setPlaceName] = useState('');
@@ -37,6 +39,8 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
   const [districtId, setDistrictId] = useState('');
   const [description, setDescription] = useState('');
   const [category] = useState<string>('Heritage Sites');
+  const [lat, setLat] = useState<string>('27.7'); // Default to Kathmandu
+  const [lng, setLng] = useState<string>('85.3'); // Default to Kathmandu
 
   // Reset district when province changes
   useEffect(() => {
@@ -60,24 +64,30 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
     const content = contentRef.current;
     if (!section || !content) return;
 
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        content,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
+    let ctx: gsap.Context;
+    const timer = setTimeout(() => {
+      ctx = gsap.context(() => {
+        // Ensure content is visible as a safety measure
+        gsap.set(content, { visibility: 'visible', opacity: 1 });
+
+        gsap.from(content, {
+          opacity: 0,
+          y: 30,
+          duration: 0.8,
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: section,
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
           },
-        }
-      );
-    }, section);
+        });
+      }, section);
+    }, 100);
 
-    return () => ctx.revert();
+    return () => {
+      clearTimeout(timer);
+      ctx?.revert();
+    };
   }, [ref]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'place' | 'article') => {
@@ -136,12 +146,20 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
         description,
         category,
         image: imageUrl,
-        coordinates: { lat: 27.7, lng: 85.3 }, // Default to Katmandu
+        coordinates: { 
+          lat: parseFloat(lat) || 27.7, 
+          lng: parseFloat(lng) || 85.3 
+        },
         best_months: ['March', 'April', 'October', 'November'],
         cultural_significance: 'Newly added community destination.',
       };
 
       await addDestination(newPlace);
+      
+      // Invalidate queries to show new data immediately
+      queryClient.invalidateQueries({ queryKey: ['destinations'] });
+      queryClient.invalidateQueries({ queryKey: ['recent-destinations'] });
+      
       console.log('Destination added successfully!');
       toast.success('Destination added successfully! It will appear on the map in real-time.');
       setPlaceName('');
@@ -150,6 +168,8 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
       setDescription('');
       setPlaceImage(null);
       setPlacePreview(null);
+      setLat('27.7');
+      setLng('85.3');
     } catch (error: any) {
       console.error('Error adding destination:', error);
       if (error.code === '23505') {
@@ -186,6 +206,10 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
       };
 
       await addNewsArticle(newArticle);
+      
+      // Invalidate news query
+      queryClient.invalidateQueries({ queryKey: ['news'] });
+      
       console.log('Article shared successfully!');
       toast.success('Opinion shared! Other travelers will see it instantly.');
       setArticleTitle('');
@@ -270,6 +294,32 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
                         className="rounded-xl bg-muted/50 border-0"
                       />
                       <p className="text-xs text-muted-foreground">Type name (e.g. "Kathmandu")</p>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Latitude</label>
+                      <Input 
+                        type="number"
+                        step="0.0001"
+                        placeholder="27.7000" 
+                        value={lat}
+                        onChange={(e) => setLat(e.target.value)}
+                        required
+                        className="rounded-xl bg-muted/50 border-0"
+                      />
+                      <p className="text-xs text-muted-foreground">e.g. 26.65 for Satakshi</p>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Longitude</label>
+                      <Input 
+                        type="number"
+                        step="0.0001"
+                        placeholder="85.3000" 
+                        value={lng}
+                        onChange={(e) => setLng(e.target.value)}
+                        required
+                        className="rounded-xl bg-muted/50 border-0"
+                      />
+                      <p className="text-xs text-muted-foreground">e.g. 87.85 for Satakshi</p>
                     </div>
                   </div>
 

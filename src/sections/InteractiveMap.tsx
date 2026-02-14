@@ -107,7 +107,7 @@ export function InteractiveMap({ sectionRef }: InteractiveMapProps) {
             trigger: section,
             start: 'top 85%',
             end: 'top 20%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
           },
         }
       );
@@ -125,7 +125,7 @@ export function InteractiveMap({ sectionRef }: InteractiveMapProps) {
           scrollTrigger: {
             trigger: map,
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
           },
         }
       );
