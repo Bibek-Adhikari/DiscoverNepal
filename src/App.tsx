@@ -13,6 +13,7 @@ import { DestinationHighlights } from '@/sections/DestinationHighlights';
 import { PlanYourVisit } from '@/sections/PlanYourVisit';
 import { RecentDiscoveries } from '@/sections/RecentDiscoveries';
 import { AdminDashboard } from '@/sections/AdminDashboard';
+import { TrekQuiz } from '@/sections/TrekQuiz';
 import { Footer } from '@/sections/Footer';
 import { Toaster } from '@/components/ui/sonner';
 import './App.css';
@@ -129,9 +130,13 @@ function App() {
             {/* Hero Section - z-10 */}
             <HeroSection onExploreClick={scrollToTerritory} onNewsClick={scrollToNews} />
 
+
             {/* Territory Explorer - z-20 */}
             <TerritoryExplorer sectionRef={territoryRef} />
 
+            {/* Trek Quiz Discovery - z-15 */}
+            <TrekQuiz />
+            
             {/* Recent Discoveries - z-20 */}
             <RecentDiscoveries />
 

@@ -83,17 +83,17 @@ export function Header({ onExploreClick, onDashboardClick, onAdminClick }: Heade
               aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
             >
               <Sun
-                className={`w-4 h-4 sm:w-5 sm:h-5 absolute transition-all duration-500 ${
+                className={`w-4 h-4 sm:w-5 sm:h-5 absolute transition-all duration-700 ease-in-out ${
                   theme === 'dark'
-                    ? 'rotate-90 scale-0 opacity-0'
-                    : 'rotate-0 scale-100 opacity-100'
+                    ? 'rotate-90 scale-0 opacity-0 blur-sm'
+                    : 'rotate-0 scale-100 opacity-100 blur-0'
                 }`}
               />
               <Moon
-                className={`w-4 h-4 sm:w-5 sm:h-5 absolute transition-all duration-500 ${
+                className={`w-4 h-4 sm:w-5 sm:h-5 absolute transition-all duration-700 ease-in-out ${
                   theme === 'light'
-                    ? '-rotate-90 scale-0 opacity-0'
-                    : 'rotate-0 scale-100 opacity-100'
+                    ? '-rotate-90 scale-0 opacity-0 blur-sm'
+                    : 'rotate-0 scale-100 opacity-100 blur-0'
                 }`}
               />
             </Button>

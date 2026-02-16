@@ -240,10 +240,31 @@ export function AdminDashboard({ sectionRef }: AdminDashboardProps) {
           <h2 className="mt-3 text-4xl md:text-5xl font-bold tracking-tight font-['Space_Grotesk']">
             Expand the <span className="text-gradient-sunrise">Discovery</span>
           </h2>
-          <p className="mt-4 text-muted-foreground">
+          <p className="mt-4 text-muted-foreground mb-8">
             Share hidden gems or your travel experiences with the world. 
             All contributions are synced in real-time.
           </p>
+
+          {/* Sync Data Button */}
+          <div className="flex justify-center mb-8">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={async () => {
+                const { seedSupabaseData } = await import('@/lib/seedData');
+                toast.promise(seedSupabaseData(), {
+                  loading: 'Syncing static data to Supabase...',
+                  success: (data: any) => data.success ? 'Data synced successfully!' : 'Sync failed: ' + data.error,
+                  error: 'Error syncing data',
+                });
+                queryClient.invalidateQueries();
+              }}
+              className="rounded-full border-[#FF5A3C]/30 text-[#FF5A3C] hover:bg-[#FF5A3C]/10"
+            >
+              <Globe className="w-4 h-4 mr-2" />
+              Sync Static Data to Cloud
+            </Button>
+          </div>
         </div>
 
         <div className="max-w-4xl mx-auto">
