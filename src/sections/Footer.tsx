@@ -172,23 +172,3 @@ function ContactItem({ icon: Icon, label, value }: { icon: any, label: string, v
     </div>
   );
 }
-
-function FooterColumn({ title, links }: { title: string, links: { label: string, href: string }[] }) {
-  return (
-    <div>
-      <h4 className="font-semibold text-sm mb-4 text-white/80">{title}</h4>
-      <ul className="space-y-2">
-        {links.map((link) => (
-          <li key={link.label}>
-            <a
-              href={link.href}
-              className="text-sm text-white/50 hover:text-[#FF5A3C] transition-colors"
-            >
-              {link.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
