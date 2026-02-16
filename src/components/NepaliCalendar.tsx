@@ -34,7 +34,7 @@ const WEEK_DAYS_NP = ['आइत', 'सोम', 'मंगल', 'बुध', '�
 const WEEK_DAYS_FULL_NP = ['आइतबार', 'सोमबार', 'मंगलबार', 'बुधबार', 'बिहिबार', 'शुक्रबार', 'शनिबार'];
 
 // Major festivals and holidays for 2082 BS (based on Hamro Patro data)
-const FESTIVALS_2082: { [key: string]: { name: string; nameNp: string; type: 'public' | 'religious' | 'cultural' | 'international' }[] } = {
+const FESTIVALS_2082: { [key: string]: { name: string; nameNp: string; type: 'public' | 'religious' | 'cultural' | 'international'; description?: string }[] } = {
   // Baisakh (April-May)
   '0-1': [{ name: 'New Year 2082', nameNp: 'नयाँ वर्ष २०८२', type: 'public' }],
   '0-11': [{ name: 'Loktantra Diwas', nameNp: 'लोकतन्त्र दिवस', type: 'public' }],
@@ -99,17 +99,62 @@ const FESTIVALS_2082: { [key: string]: { name: string; nameNp: string; type: 'pu
   
   // Falgun (February-March)
   '10-3': [{ name: 'Maha Shivaratri', nameNp: 'महाशिवरात्रि', type: 'public' }],
-  '10-6': [{ name: 'Gyalpo Lhosar', nameNp: 'ग्याल्पो ल्होसार', type: 'public' }],
-  '10-7': [{ name: 'Democracy Day', nameNp: 'प्रजातन्त्र दिवस', type: 'public' }],
-  '10-18': [{ name: 'Holi (Hilly)', nameNp: 'होली (पहाडी)', type: 'public' }],
-  '10-19': [{ name: 'Holi (Terai)', nameNp: 'होली (तराई)', type: 'public' }],
-  '10-24': [{ name: "Women's Day", nameNp: 'अन्तर्राष्ट्रिय महिला दिवस', type: 'international' }],
+  '10-6': [{ 
+    name: 'Gyalpo Lhosar', 
+    nameNp: 'ग्याल्पो ल्होसार', 
+    type: 'public',
+    description: 'शेर्पा समुदायको नयाँ वर्षको पर्व।'
+  }],
+  '10-7': [{ 
+    name: 'Democracy Day', 
+    nameNp: 'प्रजातन्त्र दिवस', 
+    type: 'public',
+    description: 'नेपालमा प्रजातन्त्र स्थापना भएको सम्झनामा मनाइने दिवस।'
+  }],
+  '10-18': [{ 
+    name: 'Holi (Hilly)', 
+    nameNp: 'होली (पहाडी)', 
+    type: 'public',
+    description: 'रङहरूको पर्व फागु पूर्णिमा, पहाडी क्षेत्रमा मनाइने।'
+  }],
+  '10-19': [{ 
+    name: 'Holi (Terai)', 
+    nameNp: 'होली (तराई)', 
+    type: 'public',
+    description: 'रङहरूको पर्व फागु पूर्णिमा, तराई क्षेत्रमा मनाइने।'
+  }],
+  '10-24': [{ 
+    name: "Women's Day", 
+    nameNp: 'अन्तर्राष्ट्रिय महिला दिवस', 
+    type: 'international',
+    description: 'महिलाको अधिकार, समानता र सशक्तिकरणको सम्मानमा मनाइने दिवस।'
+  }],
   
   // Chaitra (March-April)
-  '11-4': [{ name: 'Ghode Jatra', nameNp: 'घोडेजात्रा', type: 'cultural' }],
-  '11-13': [{ name: 'Ram Nawami', nameNp: 'राम नवमी', type: 'religious' }],
-  '11-17': [{ name: 'Mahabir Jayanti', nameNp: 'महावीर जयन्ती', type: 'religious' }],
-  '11-30': [{ name: 'Chaite Dashain', nameNp: 'चैते दशैं', type: 'religious' }],
+  '11-4': [{ 
+    name: 'Ghode Jatra', 
+    nameNp: 'घोडेजात्रा', 
+    type: 'cultural',
+    description: 'काठमाडौं उपत्यकामा मनाइने परम्परागत सांस्कृतिक पर्व।'
+  }],
+  '11-13': [{ 
+    name: 'Ram Nawami', 
+    nameNp: 'राम नवमी', 
+    type: 'religious',
+    description: 'भगवान रामको जन्मोत्सवको रूपमा मनाइने हिन्दु पर्व।'
+  }],
+  '11-17': [{ 
+    name: 'Mahabir Jayanti', 
+    nameNp: 'महावीर जयन्ती', 
+    type: 'religious',
+    description: 'जैन धर्मका प्रवर्तक भगवान महावीरको जन्मजयन्ती।'
+  }],
+  '11-30': [{ 
+    name: 'Chaite Dashain', 
+    nameNp: 'चैते दशैं', 
+    type: 'religious',
+    description: 'वर्षमा दोस्रो पटक मनाइने दशैं पर्व, देवी दुर्गाको पूजा गरिन्छ।'
+  }],
 };
 
 // Calculate starting day of week for each month in 2082 BS
@@ -149,9 +194,9 @@ export const NepaliCalendar: React.FC<NepaliCalendarProps> = ({
   className = '',
   onDateSelect 
 }) => {
-  const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(10);
   const [selectedDate, setSelectedDate] = useState<{month: number, day: number} | null>(null);
-  const [showFestivalInfo, setShowFestivalInfo] = useState(false);
+  const [showFestivalInfo, setShowFestivalInfo] = useState(true);
   const year = 2082;
 
   const currentMonth = NEPALI_MONTHS_2082[currentMonthIndex];
@@ -369,6 +414,29 @@ export const NepaliCalendar: React.FC<NepaliCalendarProps> = ({
                   <div className="text-lg text-neutral-600 dark:text-neutral-400">
                     {WEEK_DAYS_FULL_NP[(getStartDayOfWeek(selectedDate.month) + selectedDate.day - 1) % 7]}
                   </div>
+
+                  {/* Date Festivals */}
+                  {todayFestivals.length > 0 && (
+                    <div className="pt-4 space-y-3">
+                      {todayFestivals.map((festival, idx) => (
+                        <div 
+                          key={idx}
+                          className={`p-3 rounded-xl border ${getFestivalColor(festival.type)}`}
+                        >
+                          <div className="font-bold text-sm">{festival.nameNp}</div>
+                          <div className="text-[10px] opacity-80 uppercase font-bold tracking-wider mb-1">
+                            {festival.type}
+                          </div>
+                          {festival.description && (
+                            <div className="text-xs italic opacity-90 leading-relaxed border-t border-black/5 dark:border-white/5 pt-2">
+                              {festival.description}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   <div className="pt-3 border-t border-neutral-200 dark:border-neutral-800">
                     <div className="text-sm text-neutral-500 dark:text-neutral-500">English Date</div>
                     <div className="text-neutral-900 dark:text-neutral-200 font-medium">
@@ -392,19 +460,8 @@ export const NepaliCalendar: React.FC<NepaliCalendarProps> = ({
                 </h3>
                 
                 {selectedDate && todayFestivals.length > 0 ? (
-                  <div className="space-y-3">
-                    {todayFestivals.map((festival, idx) => (
-                      <div 
-                        key={idx}
-                        className={`p-3 rounded-xl border ${getFestivalColor(festival.type)}`}
-                      >
-                        <div className="font-bold text-sm md:text-base">{festival.nameNp}</div>
-                        <div className="text-xs opacity-80 mt-0.5">{festival.name}</div>
-                        <div className="mt-2 inline-block px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider bg-white/50 dark:bg-black/20">
-                          {festival.type}
-                        </div>
-                      </div>
-                    ))}
+                  <div className="p-3 bg-neutral-50 dark:bg-neutral-800/50 rounded-xl text-xs text-neutral-500 italic text-center">
+                    Scroll up to see holiday details for this date
                   </div>
                 ) : selectedDate ? (
                   <div className="text-neutral-500 dark:text-neutral-500 text-center py-4 text-sm">
@@ -413,27 +470,34 @@ export const NepaliCalendar: React.FC<NepaliCalendarProps> = ({
                 ) : (
                   <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
                     {Object.entries(FESTIVALS_2082)
-                      .filter(([key]) => key.startsWith(`${currentMonthIndex}-`))
+                      .filter(([key]) => key.split('-')[0] === currentMonthIndex.toString())
                       .map(([key, festivals]) => {
                         const day = parseInt(key.split('-')[1]);
                         return festivals.map((f, i) => (
                           <div 
                             key={`${key}-${i}`}
                             onClick={() => setSelectedDate({month: currentMonthIndex, day})}
-                            className="flex items-center gap-3 p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer transition-colors group"
+                            className="flex flex-col gap-1 p-3 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer transition-colors group border border-transparent hover:border-neutral-200 dark:hover:border-neutral-700"
                           >
-                            <div className={`
-                              w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0
-                              ${getFestivalColor(f.type).split(' ')[0]} ${getFestivalColor(f.type).split(' ')[1]}
-                            `}>
-                              {toNepaliNumber(day)}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
-                                {f.nameNp}
+                            <div className="flex items-center gap-3">
+                              <div className={`
+                                w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0
+                                ${getFestivalColor(f.type).split(' ')[0]} ${getFestivalColor(f.type).split(' ')[1]}
+                              `}>
+                                {toNepaliNumber(day)}
                               </div>
-                              <div className="text-xs text-neutral-500 dark:text-neutral-500 truncate">{f.name}</div>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                                  {f.nameNp}
+                                </div>
+                                <div className="text-[10px] text-neutral-500 dark:text-neutral-500 truncate">{f.name}</div>
+                              </div>
                             </div>
+                            {f.description && (
+                              <div className="pl-11 text-[10px] text-neutral-500 dark:text-neutral-400 italic line-clamp-2">
+                                {f.description}
+                              </div>
+                            )}
                           </div>
                         ));
                       })}
@@ -468,26 +532,49 @@ export const NepaliCalendar: React.FC<NepaliCalendarProps> = ({
 
             {/* Legend */}
             <div className="bg-white dark:bg-neutral-900 rounded-2xl p-4 shadow border border-neutral-200 dark:border-neutral-800">
-              <h4 className="text-xs font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3">Legend</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                  <span className="text-neutral-700 dark:text-neutral-300">Public Holiday</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                  <span className="text-neutral-700 dark:text-neutral-300">Religious</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                  <span className="text-neutral-700 dark:text-neutral-300">Cultural</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                  <span className="text-neutral-700 dark:text-neutral-300">International</span>
-                </div>
-              </div>
-            </div>
+  <h4 className="text-xs font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3 flex justify-between items-center">
+    <span>Legend</span>
+    <span className="font-hindi text-[12px]">संकेतहरू</span>
+  </h4>
+  
+  <div className="space-y-3 text-xs">
+    {/* Public Holiday */}
+    <div className="flex items-center gap-3">
+      <div className="w-3 h-3 rounded-full bg-red-500 shrink-0"></div>
+      <div className="flex flex-col">
+        <span className="text-neutral-900 dark:text-neutral-100 font-medium">Public Holiday</span>
+        <span className="text-neutral-500 dark:text-neutral-500 text-[12px]">सार्वजनिक बिदा</span>
+      </div>
+    </div>
+
+    {/* Religious */}
+    <div className="flex items-center gap-3">
+      <div className="w-3 h-3 rounded-full bg-orange-500 shrink-0"></div>
+      <div className="flex flex-col">
+        <span className="text-neutral-900 dark:text-neutral-100 font-medium">Religious</span>
+        <span className="text-neutral-500 dark:text-neutral-500 text-[12px]">धार्मिक पर्व</span>
+      </div>
+    </div>
+
+    {/* Cultural */}
+    <div className="flex items-center gap-3">
+      <div className="w-3 h-3 rounded-full bg-purple-500 shrink-0"></div>
+      <div className="flex flex-col">
+        <span className="text-neutral-900 dark:text-neutral-100 font-medium">Cultural</span>
+        <span className="text-neutral-500 dark:text-neutral-500 text-[12px]">सांस्कृतिक</span>
+      </div>
+    </div>
+
+    {/* International */}
+    <div className="flex items-center gap-3">
+      <div className="w-3 h-3 rounded-full bg-blue-500 shrink-0"></div>
+      <div className="flex flex-col">
+        <span className="text-neutral-900 dark:text-neutral-100 font-medium">International</span>
+        <span className="text-neutral-500 dark:text-neutral-500 text-[12px]">अन्तर्राष्ट्रिय दिवस</span>
+      </div>
+    </div>
+  </div>
+</div>
           </div>
         </div>
 

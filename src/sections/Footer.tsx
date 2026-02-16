@@ -1,8 +1,13 @@
 import { useState } from 'react';
-import { Mountain, Mail, Phone, Clock, Send, Instagram, Twitter, Facebook, Youtube } from 'lucide-react';
+
+import { Mountain, Mail, Phone, Clock, Send, Instagram, Twitter, Facebook, Youtube, MapPin } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
+
 import { Input } from '@/components/ui/input';
+
 import { toast } from 'sonner';
+import GoogleMap from '@/components/GoogleMap';
 
 const isValidEmail = (email: string) => 
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -32,36 +37,11 @@ export function Footer() {
     }
   };
 
-  const footerLinks = {
-    places: [
-      { label: 'Kathmandu Valley', href: '/places/kathmandu' },
-      { label: 'Pokhara', href: '/places/pokhara' },
-      { label: 'Chitwan', href: '/places/chitwan' },
-      { label: 'Everest Region', href: '/places/everest' },
-      { label: 'Annapurna', href: '/places/annapurna' },
-      { label: 'Lumbini', href: '/places/lumbini' },
-    ],
-    stories: [
-      { label: 'Trekking Guides', href: '/stories/trekking' },
-      { label: 'Cultural Insights', href: '/stories/culture' },
-      { label: 'Wildlife Encounters', href: '/stories/wildlife' },
-      { label: 'Local Cuisine', href: '/stories/food' },
-      { label: 'Festival Calendar', href: '/stories/festivals' },
-    ],
-    practical: [
-      { label: 'Visa Information', href: '/guide/visa' },
-      { label: 'Best Time to Visit', href: '/guide/seasons' },
-      { label: 'Packing Lists', href: '/guide/packing' },
-      { label: 'Health & Safety', href: '/guide/safety' },
-      { label: 'Responsible Travel', href: '/guide/responsible' },
-    ],
-  };
-
   const socialLinks = [
-    { icon: Instagram, href: 'https://instagram.com', label: 'Instagram' },
-    { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
-    { icon: Facebook, href: 'https://facebook.com', label: 'Facebook' },
-    { icon: Youtube, href: 'https://youtube.com', label: 'YouTube' },
+    { icon: Instagram, href: 'https://instagram.com ', label: 'Instagram' },
+    { icon: Twitter, href: 'https://twitter.com ', label: 'Twitter' },
+    { icon: Facebook, href: 'https://facebook.com ', label: 'Facebook' },
+    { icon: Youtube, href: 'https://youtube.com ', label: 'YouTube' },
   ];
 
   return (
@@ -90,7 +70,7 @@ export function Footer() {
 
           {/* Right Column */}
           <div>
-            <div className="mb-12">
+            <div className="mb-8">
               <h3 className="text-lg font-semibold mb-2">Stay Updated</h3>
               <p className="text-white/60 text-sm mb-4">
                 One email a month. No noise.
@@ -121,10 +101,22 @@ export function Footer() {
               </form>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
-              <FooterColumn title="Places" links={footerLinks.places} />
-              <FooterColumn title="Stories" links={footerLinks.stories} />
-              <FooterColumn title="Practical" links={footerLinks.practical} />
+            {/* Google Maps Section */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+              <div className="flex items-center gap-2 mb-4">
+                <MapPin className="w-5 h-5 text-[#FF5A3C]" />
+                <h3 className="text-lg font-semibold">Find Us</h3>
+              </div>
+              <div className="relative w-full h-64 rounded-xl overflow-hidden bg-white/5">
+                <GoogleMap 
+                  embedSrc="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.2345678901234!2d85.3240!3d27.7172!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1908c874a40b%3A0x5e8b8e5f5e8b8e5f!2sKathmandu%2C%20Nepal!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
+                  title="Discover Nepal Studio Location"
+                  className="absolute inset-0"
+                />
+              </div>
+              <p className="text-sm text-white/60 mt-3">
+                Thamel, Kathmandu, Nepal
+              </p>
             </div>
           </div>
         </div>
