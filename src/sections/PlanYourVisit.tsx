@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { NepaliCalendar } from '@/components/NepaliCalendar';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -381,8 +382,13 @@ export function PlanYourVisit() {
             })}
           </div>
         </div>
-
-        {/* Bottom Stats Section */}
+ 
+         {/* Festivals Section */}
+         <div className="mt-20 lg:mt-32">
+           <NepaliCalendar />
+         </div>
+ 
+         {/* Bottom Stats Section */}
         <div 
           ref={statsRef}
           className="mt-12 lg:mt-20"
