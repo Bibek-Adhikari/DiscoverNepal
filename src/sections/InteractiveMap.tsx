@@ -15,7 +15,7 @@ import { X, Mountain, Thermometer, Calendar, Wind, Navigation, MapPin, Globe, Co
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import GoogleMap from '@/components/GoogleMap';
-import InteractiveGoogleMap from '@/components/InteractiveGoogleMap';
+
 import { cn } from '@/lib/utils';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -285,23 +285,126 @@ export function InteractiveMap({ sectionRef }: InteractiveMapProps) {
           className="relative w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[21/9] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-border/50 bg-muted/30"
           style={{ opacity: isLoading ? 0 : 1 }}
         >
-          {/* Interactive Google Map */}
-          <InteractiveGoogleMap 
-            destinations={filteredDestinations}
-            onDestinationClick={handleDestinationClick}
-            className="absolute inset-0 w-full h-full"
-          />
+          {/* Stylized Map Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-sky-50 via-emerald-50/50 to-amber-50/30 dark:from-slate-900 dark:via-slate-800/50 dark:to-slate-900/80">
+            {/* Mountain Range Silhouettes */}
+            <svg
+              className="absolute inset-0 w-full h-full opacity-60 dark:opacity-40"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              {/* Himalayan range (north) */}
+              <path
+                d="M0,20 Q10,15 20,18 Q30,10 40,16 Q50,8 60,14 Q70,12 80,17 Q90,13 100,19 L100,0 L0,0 Z"
+                className="fill-slate-300 dark:fill-slate-700"
+              />
+              {/* Hill range (middle) */}
+              <path
+                d="M0,45 Q15,40 30,44 Q45,38 60,43 Q75,39 100,45 L100,20 L0,20 Z"
+                className="fill-emerald-200/50 dark:fill-emerald-900/30"
+              />
+              {/* Terai plains (south) */}
+              <path
+                d="M0,70 Q25,68 50,70 Q75,68 100,70 L100,45 L0,45 Z"
+                className="fill-amber-100/50 dark:fill-amber-900/20"
+              />
+            </svg>
 
-          {/* Empty state overlay if needed, or rely on map being empty */}
-          {isMapLoaded && filteredDestinations.length === 0 && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="text-center p-6 bg-background/80 backdrop-blur-sm rounded-2xl border border-border/50 shadow-lg pointer-events-auto">
+            {/* Grid Lines */}
+            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div
+                  key={`h-${i}`}
+                  className="absolute w-full border-t border-foreground"
+                  style={{ top: `${i * 10}%` }}
+                />
+              ))}
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div
+                  key={`v-${i}`}
+                  className="absolute h-full border-l border-foreground"
+                  style={{ left: `${i * 10}%` }}
+                />
+              ))}
+            </div>
+
+            {/* Region Labels */}
+            <div className="absolute top-[8%] left-[4%] text-[10px] sm:text-xs font-mono font-semibold text-muted-foreground/40 uppercase tracking-widest">
+              Himalayas
+            </div>
+            <div className="absolute top-[35%] left-[4%] text-[10px] sm:text-xs font-mono font-semibold text-muted-foreground/40 uppercase tracking-widest">
+              Hills
+            </div>
+            <div className="absolute top-[62%] left-[4%] text-[10px] sm:text-xs font-mono font-semibold text-muted-foreground/40 uppercase tracking-widest">
+              Terai
+            </div>
+
+            {/* Destination Markers */}
+            {isMapLoaded && filteredDestinations.map((dest) => {
+              // Convert lat/lng to relative % positions on the SVG background
+              // Nepal bounding box: lat ~26.3–30.5, lng ~80.0–88.2
+              const relX = ((dest.coordinates.lng - 80.0) / (88.2 - 80.0)) * 100;
+              const relY = ((30.5 - dest.coordinates.lat) / (30.5 - 26.3)) * 100;
+              return (
+              <button
+                key={dest.id}
+                className="destination-marker absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A3C] focus-visible:ring-offset-2 rounded-full"
+                style={{
+                  left: `${relX}%`,
+                  top: `${relY}%`,
+                  zIndex: selectedDestination?.id === dest.id ? 50 : 10,
+                }}
+                onClick={() => handleDestinationClick(dest)}
+                aria-label={`View details for ${dest.name}`}
+              >
+                {/* Pulsing Rings */}
+                <div className="absolute inset-0 animate-ping opacity-20">
+                  <div
+                    className={cn(
+                      "w-4 h-4 rounded-full",
+                      activeDistrict !== 'all' && dest.districtId === activeDistrict 
+                        ? 'bg-[#FF5A3C]' 
+                        : 'bg-current'
+                    )}
+                    style={{ 
+                      backgroundColor: activeDistrict !== 'all' && dest.districtId === activeDistrict 
+                        ? undefined 
+                        : categoryColors[dest.category] 
+                    }}
+                  />
+                </div>
+                
+                {/* Marker Dot */}
+                <div
+                  className={cn(
+                    "relative w-3 h-3 sm:w-4 sm:h-4 rounded-full border-2 border-white shadow-lg transition-all duration-300",
+                    "group-hover:scale-150 group-hover:shadow-xl",
+                    selectedDestination?.id === dest.id ? "scale-150 ring-2 ring-white ring-offset-2 ring-offset-background" : ""
+                  )}
+                  style={{ backgroundColor: categoryColors[dest.category] }}
+                >
+                  {/* Tooltip on hover */}
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-background/95 backdrop-blur-sm rounded-lg shadow-xl text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-20 border border-border/50">
+                    {dest.name}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-background/95" />
+                  </div>
+                </div>
+              </button>
+              );
+            })}
+
+            {/* Empty state */}
+            {isMapLoaded && filteredDestinations.length === 0 && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center p-6 bg-background/80 backdrop-blur-sm rounded-2xl border border-border/50 shadow-lg">
                   <MapPin className="w-8 h-8 text-muted-foreground/50 mx-auto mb-2" />
                   <p className="text-sm text-muted-foreground font-medium">No destinations found</p>
                   <p className="text-xs text-muted-foreground/70 mt-1">Try adjusting your filters</p>
                 </div>
               </div>
-          )}
+            )}
+          </div>
 
             {/* Legend */}
             <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 bg-background/90 backdrop-blur-md rounded-xl p-3 shadow-lg border border-border/50 max-w-[140px] sm:max-w-none">
