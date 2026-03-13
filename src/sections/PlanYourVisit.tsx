@@ -99,10 +99,21 @@ export function PlanYourVisit() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
+      // Set initial hidden states so scroll-triggered animations don't flash
+      gsap.set('.plan-header', { opacity: 0, y: 60 });
+      if (imageRef.current) {
+        gsap.set(imageRef.current, { opacity: 0, y: 80, scale: 0.95 });
+      }
+      if (cardsRef.current) {
+        gsap.set(cardsRef.current.querySelectorAll('.plan-card'), { opacity: 0, y: 40, scale: 0.95 });
+      }
+      if (statsRef.current) {
+        gsap.set(statsRef.current, { opacity: 0, y: 40 });
+      }
+
       // Header animation
-      gsap.fromTo(
+      gsap.to(
         '.plan-header',
-        { y: 60, opacity: 0 },
         {
           y: 0,
           opacity: 1,
@@ -118,9 +129,8 @@ export function PlanYourVisit() {
 
       // Image parallax and reveal
       if (imageRef.current) {
-        gsap.fromTo(
+        gsap.to(
           imageRef.current,
-          { y: 80, opacity: 0, scale: 0.95 },
           {
             y: 0,
             opacity: 1,
@@ -151,9 +161,8 @@ export function PlanYourVisit() {
       // Cards staggered animation
       if (cardsRef.current) {
         const cards = cardsRef.current.querySelectorAll('.plan-card');
-        gsap.fromTo(
+        gsap.to(
           cards,
-          { y: 40, opacity: 0, scale: 0.95 },
           {
             y: 0,
             opacity: 1,
@@ -174,9 +183,8 @@ export function PlanYourVisit() {
       if (statsRef.current) {
         const statValues = statsRef.current.querySelectorAll('.stat-value');
         
-        gsap.fromTo(
+        gsap.to(
           statsRef.current,
-          { y: 40, opacity: 0 },
           {
             y: 0,
             opacity: 1,

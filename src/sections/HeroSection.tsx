@@ -39,63 +39,27 @@ export function HeroSection({ onExploreClick, onNewsClick }: HeroSectionProps) {
 
     if (!section || !content || !bg) return;
 
-    let ctx: gsap.Context;
-    const timer = setTimeout(() => {
-      ctx = gsap.context(() => {
-        // Forced visibility safety catch
-        const animElements = [
-          bg,
-          '.hero-badge',
-          '.hero-title',
-          '.hero-subtitle',
-          '.hero-cta',
-          '.hero-stats'
-        ];
-        gsap.set(animElements, { visibility: 'visible', opacity: 1 });
+    const ctx = gsap.context(() => {
+      // Set initial hidden states immediately so elements don't flash before animating in
+      gsap.set(bg, { opacity: 0, scale: 1.1 });
+      gsap.set(content.querySelector('.hero-badge'), { opacity: 0, y: 30 });
+      gsap.set(content.querySelector('.hero-title'), { opacity: 0, y: 60 });
+      gsap.set(content.querySelector('.hero-subtitle'), { opacity: 0, y: 30 });
+      gsap.set(content.querySelector('.hero-cta'), { opacity: 0, y: 30 });
+      gsap.set(content.querySelector('.hero-stats'), { opacity: 0, y: 40 });
 
-        // Auto-play entrance animation on load
-        const loadTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      // Entrance animation — animate TO final visible state
+      const loadTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-        // Background fade in with scale
-        loadTl.fromTo(bg, { opacity: 0, scale: 1.1 }, { opacity: 1, scale: 1, duration: 1.5 }, 0);
+      loadTl.to(bg, { opacity: 1, scale: 1, duration: 1.5 }, 0);
+      loadTl.to(content.querySelector('.hero-badge'), { y: 0, opacity: 1, duration: 0.8 }, 0.3);
+      loadTl.to(content.querySelector('.hero-title'), { y: 0, opacity: 1, duration: 1 }, 0.5);
+      loadTl.to(content.querySelector('.hero-subtitle'), { y: 0, opacity: 1, duration: 0.8 }, 0.7);
+      loadTl.to(content.querySelector('.hero-cta'), { y: 0, opacity: 1, duration: 0.8 }, 0.9);
+      loadTl.to(content.querySelector('.hero-stats'), { y: 0, opacity: 1, duration: 0.8 }, 1.1);
+    }, section);
 
-        // Content entrance
-        loadTl.from(
-          content.querySelector('.hero-badge'),
-          { y: 30, opacity: 0, duration: 0.8 },
-          0.3
-        );
-
-        loadTl.from(
-          content.querySelector('.hero-title'),
-          { y: 60, opacity: 0, duration: 1 },
-          0.5
-        );
-
-        loadTl.from(
-          content.querySelector('.hero-subtitle'),
-          { y: 30, opacity: 0, duration: 0.8 },
-          0.7
-        );
-
-        loadTl.from(
-          content.querySelector('.hero-cta'),
-          { y: 30, opacity: 0, duration: 0.8 },
-          0.9
-        );
-
-        loadTl.from(
-          content.querySelector('.hero-stats'),
-          { y: 40, opacity: 0, duration: 0.8 },
-          1.1
-        );
-      }, section);
-    }, 100);
-
-    return () => {
-      clearTimeout(timer);
-      ctx?.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (

@@ -87,11 +87,11 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
           if (t.trigger === section) t.kill();
         });
 
-        // Forced visibility safety catch
-        gsap.set(['.impact-header', metrics, chart, '.additional-stats'], { 
-          visibility: 'visible', 
-          opacity: 1 
-        });
+        // Set initial hidden states so elements animate in smoothly from invisible
+        gsap.set('.impact-header', { opacity: 0, y: 30 });
+        gsap.set(gsap.utils.toArray(metrics.children), { opacity: 0, y: 30 });
+        gsap.set(chart, { opacity: 0, y: 40 });
+        gsap.set(gsap.utils.toArray('.additional-stats > div'), { opacity: 0, y: 20 });
 
         // Coordinate everything into a single timeline for the section
         const tl = gsap.timeline({
@@ -103,9 +103,9 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
         });
 
         // 1. Header animation
-        tl.from('.impact-header', {
-          y: 30,
-          opacity: 0,
+        tl.to('.impact-header', {
+          y: 0,
+          opacity: 1,
           duration: 0.8,
           ease: 'power2.out'
         });
@@ -113,9 +113,9 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
         // 2. Metrics stagger
         const metricItems = gsap.utils.toArray(metrics.children);
         if (metricItems.length > 0) {
-          tl.from(metricItems, {
-            y: 30,
-            opacity: 0,
+          tl.to(metricItems, {
+            y: 0,
+            opacity: 1,
             duration: 0.6,
             stagger: 0.1,
             ease: 'power2.out'
@@ -123,9 +123,9 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
         }
 
         // 3. Chart entrance
-        tl.from(chart, {
-          y: 40,
-          opacity: 0,
+        tl.to(chart, {
+          y: 0,
+          opacity: 1,
           duration: 0.8,
           ease: 'power2.out'
         }, '-=0.4');
@@ -133,9 +133,9 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
         // 4. Additional stats
         const additionalStats = gsap.utils.toArray('.additional-stats > div');
         if (additionalStats.length > 0) {
-          tl.from(additionalStats, {
-            y: 20,
-            opacity: 0,
+          tl.to(additionalStats, {
+            y: 0,
+            opacity: 1,
             duration: 0.5,
             stagger: 0.05,
             ease: 'power2.out'
