@@ -14,7 +14,7 @@ import { PlanYourVisit } from '@/sections/PlanYourVisit';
 import { RecentDiscoveries } from '@/sections/RecentDiscoveries';
 import { AdminDashboard } from '@/sections/AdminDashboard';
 import { TrekQuiz } from '@/sections/TrekQuiz';
-import { Footer } from '@/sections/Footer';
+import { Footer } from '@/sections/FooterSection';
 import { Toaster } from '@/components/ui/sonner';
 import './App.css';
 
