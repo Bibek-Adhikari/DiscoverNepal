@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { DataProvider } from '@/contexts/DataContext';
 import { Header } from '@/components/Header';

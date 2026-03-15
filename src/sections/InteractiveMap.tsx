@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { categoryColors } from '@/data/nepalData';
 import type { Destination, DestinationCategory } from '@/types';
 import { useData } from '@/contexts/DataContext';
