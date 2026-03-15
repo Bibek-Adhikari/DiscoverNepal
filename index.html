@@ -4,6 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Discover NEPAL</title>
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('nepal-theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = stored === 'light' || stored === 'dark' ? stored : (prefersDark ? 'dark' : 'light');
+          var root = document.documentElement;
+          root.classList.toggle('dark', theme === 'dark');
+          root.setAttribute('data-theme', theme);
+          root.style.colorScheme = theme;
+        } catch (e) {
+          // Ignore storage access failures and keep default theme.
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

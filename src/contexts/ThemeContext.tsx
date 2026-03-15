@@ -11,11 +11,13 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
+  const isValidTheme = (value: string | null): value is Theme => value === 'light' || value === 'dark';
+
   const [theme, setThemeState] = useState<Theme>(() => {
     // Check localStorage first
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('nepal-theme') as Theme;
-      if (stored) return stored;
+      const stored = localStorage.getItem('nepal-theme');
+      if (isValidTheme(stored)) return stored;
       
       // Check system preference
       if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -27,12 +29,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const root = window.document.documentElement;
+    const body = window.document.body;
     
     if (theme === 'dark') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
+
+    root.setAttribute('data-theme', theme);
+    root.style.colorScheme = theme;
+    body.setAttribute('data-theme', theme);
     
     // Persist to localStorage
     localStorage.setItem('nepal-theme', theme);

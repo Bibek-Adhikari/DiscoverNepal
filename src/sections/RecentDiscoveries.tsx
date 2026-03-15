@@ -1,7 +1,8 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { useRecentDestinations } from '@/hooks/useNepalData';
+import { useData } from '@/contexts/DataContext';
 import { 
   MapPin, 
   Calendar, 
@@ -10,101 +11,94 @@ import {
   Clock
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export function RecentDiscoveries() {
-  const { data: recentDestinations, isLoading, error } = useRecentDestinations(4);
+  const { data: recentDestinations, error } = useRecentDestinations(4);
+  const { destinations: allDestinations } = useData();
   const sectionRef = useRef<HTMLElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    console.log('RecentDiscoveries state:', { isLoading, error, dataCount: recentDestinations?.length });
-  }, [isLoading, error, recentDestinations]);
+  const fallbackRecentDestinations = useMemo(() => {
+    return [...allDestinations]
+      .sort((a, b) => {
+        const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bTime - aTime;
+      })
+      .slice(0, 4);
+  }, [allDestinations]);
+
+  const displayDestinations =
+    recentDestinations && recentDestinations.length > 0
+      ? recentDestinations
+      : fallbackRecentDestinations;
 
   useEffect(() => {
-    if (isLoading || !recentDestinations || recentDestinations.length === 0) return;
+    if (displayDestinations.length === 0) return;
 
-    let ctx: gsap.Context;
-    const timer = setTimeout(() => {
-      ctx = gsap.context(() => {
-        // First, clear any existing ScrollTriggers to avoid duplicates
-        ScrollTrigger.getAll().forEach(t => {
-          if (t.trigger === sectionRef.current || t.trigger === cardsRef.current) {
-            t.kill();
-          }
-        });
+    const ctx = gsap.context(() => {
+      // First, clear any existing ScrollTriggers to avoid duplicates
+      ScrollTrigger.getAll().forEach(t => {
+        if (t.trigger === sectionRef.current || t.trigger === cardsRef.current) {
+          t.kill();
+        }
+      });
 
-        // Ensure things are visible if they were hidden by CSS
-        gsap.set(['.recent-title', '.recent-card'], { visibility: 'visible', opacity: 1 });
+      // Ensure things are visible if they were hidden by CSS
+      gsap.set(['.recent-title', '.recent-card'], { visibility: 'visible', opacity: 1 });
 
-        // Title animation
-        gsap.from('.recent-title', {
-          y: 30,
+      // Title animation
+      gsap.from('.recent-title', {
+        y: 30,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 92%',
+          once: true,
+          toggleActions: 'play none none none',
+        }
+      });
+
+      // Cards stagger animation
+      const cards = gsap.utils.toArray('.recent-card');
+      if (cards.length > 0) {
+        gsap.from(cards, {
+          y: 50,
           opacity: 0,
-          duration: 0.8,
-          ease: 'power3.out',
+          scale: 0.95,
+          duration: 0.7,
+          stagger: 0.1,
+          ease: 'back.out(1.2)',
+          immediateRender: false,
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 85%',
+            trigger: cardsRef.current,
+            start: 'top 90%',
+            once: true,
             toggleActions: 'play none none none',
           }
         });
+      }
 
-        // Cards stagger animation
-        const cards = gsap.utils.toArray('.recent-card');
-        if (cards.length > 0) {
-          gsap.from(cards, {
-            y: 50,
-            opacity: 0,
-            scale: 0.95,
-            duration: 0.7,
-            stagger: 0.1,
-            ease: 'back.out(1.2)',
-            scrollTrigger: {
-              trigger: cardsRef.current,
-              start: 'top 80%',
-              toggleActions: 'play none none none',
-            }
-          });
-        }
-
-        ScrollTrigger.refresh();
-      }, sectionRef);
-    }, 100);
+      ScrollTrigger.refresh();
+    }, sectionRef);
 
     return () => {
-      clearTimeout(timer);
-      ctx?.revert();
+      ctx.revert();
     };
-  }, [isLoading, recentDestinations]);
-
-  if (isLoading) {
-    return (
-      <section className="py-12 sm:py-16 lg:py-32 bg-muted/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <Skeleton 
-                key={i} 
-                className="h-[320px] sm:h-[380px] lg:h-[400px] rounded-2xl sm:rounded-3xl" 
-                style={{ backgroundColor: 'rgba(100, 116, 139, 0.1)' }} 
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
+  }, [displayDestinations]);
 
   if (error) {
     console.error('Failed to load recent discoveries:', error);
     return null;
   }
 
-  if (!recentDestinations || recentDestinations.length === 0) {
+  if (displayDestinations.length === 0) {
     console.log('No recent discoveries found.');
     return (
       <section className="py-20 bg-muted/20 text-center border-t border-border/50">
@@ -164,7 +158,7 @@ export function RecentDiscoveries() {
           ref={cardsRef}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6"
         >
-          {recentDestinations.map((dest) => (
+          {displayDestinations.map((dest) => (
             <div 
               key={dest.id}
               className="recent-card group relative h-[380px] sm:h-[420px] lg:h-[450px] rounded-2xl sm:rounded-[2rem] lg:rounded-[2.5rem] overflow-hidden bg-card border border-border/50 hover:border-[#FF5A3C]/30 transition-all duration-500 shadow-md hover:shadow-lg hover:shadow-[#FF5A3C]/10"

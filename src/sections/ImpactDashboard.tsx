@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import {
@@ -54,7 +54,10 @@ function AnimatedCounter({ value, duration = 2 }: { value: number; duration?: nu
           }
         });
       },
-      { threshold: 0.2 }
+      {
+        threshold: 0.01,
+        rootMargin: '0px 0px 20% 0px',
+      }
     );
 
     observer.observe(el);
@@ -72,94 +75,96 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
 
   const { impactMetrics, monthlyVisitorData } = useData();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const section = ref.current;
     const metrics = metricsRef.current;
     const chart = chartRef.current;
 
     if (!section || !metrics || !chart) return;
 
-    let ctx: gsap.Context;
-    const timer = setTimeout(() => {
-      ctx = gsap.context(() => {
-        // Clear existing ScrollTriggers
-        ScrollTrigger.getAll().forEach(t => {
-          if (t.trigger === section) t.kill();
-        });
+    const ctx = gsap.context(() => {
+      // Clear existing ScrollTriggers
+      ScrollTrigger.getAll().forEach(t => {
+        if (t.trigger === section) t.kill();
+      });
 
-        // Forced visibility safety catch
-        gsap.set(['.impact-header', metrics, chart, '.additional-stats'], { 
-          visibility: 'visible', 
-          opacity: 1 
-        });
+      // Forced visibility safety catch
+      gsap.set(['.impact-header', metrics, chart, '.additional-stats'], {
+        visibility: 'visible',
+        opacity: 1
+      });
 
-        // Coordinate everything into a single timeline for the section
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 90%', // Trigger earlier for better UX
-            toggleActions: 'play none none none',
-          }
-        });
-
-        // 1. Header animation
-        tl.from('.impact-header', {
-          y: 30,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power2.out'
-        });
-
-        // 2. Metrics stagger
-        const metricItems = gsap.utils.toArray(metrics.children);
-        if (metricItems.length > 0) {
-          tl.from(metricItems, {
-            y: 30,
-            opacity: 0,
-            duration: 0.6,
-            stagger: 0.1,
-            ease: 'power2.out'
-          }, '-=0.4');
+      // Coordinate everything into a single timeline for the section
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top bottom-=40',
+          once: true,
+          invalidateOnRefresh: true,
+          toggleActions: 'play none none none',
         }
+      });
 
-        // 3. Chart entrance
-        tl.from(chart, {
-          y: 40,
+      // 1. Header animation
+      tl.from('.impact-header', {
+        y: 24,
+        opacity: 0,
+        immediateRender: false,
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+
+      // 2. Metrics stagger
+      const metricItems = gsap.utils.toArray(metrics.children);
+      if (metricItems.length > 0) {
+        tl.from(metricItems, {
+          y: 24,
           opacity: 0,
-          duration: 0.8,
+          immediateRender: false,
+          duration: 0.5,
+          stagger: 0.08,
+          ease: 'power2.out'
+        }, '-=0.3');
+      }
+
+      // 3. Chart entrance
+      tl.from(chart, {
+        y: 28,
+        opacity: 0,
+        immediateRender: false,
+        duration: 0.6,
+        ease: 'power2.out'
+      }, '-=0.3');
+
+      // 4. Additional stats
+      const additionalStats = gsap.utils.toArray('.additional-stats > div');
+      if (additionalStats.length > 0) {
+        tl.from(additionalStats, {
+          y: 16,
+          opacity: 0,
+          immediateRender: false,
+          duration: 0.45,
+          stagger: 0.04,
           ease: 'power2.out'
         }, '-=0.4');
+      }
 
-        // 4. Additional stats
-        const additionalStats = gsap.utils.toArray('.additional-stats > div');
-        if (additionalStats.length > 0) {
-          tl.from(additionalStats, {
-            y: 20,
-            opacity: 0,
-            duration: 0.5,
-            stagger: 0.05,
-            ease: 'power2.out'
-          }, '-=0.5');
-        }
-
-        ScrollTrigger.refresh();
-      }, section);
-    }, 150);
+      ScrollTrigger.refresh();
+    }, section);
 
     return () => {
-      clearTimeout(timer);
-      ctx?.revert();
+      ctx.revert();
     };
-  }, [ref, impactMetrics, monthlyVisitorData]);
+  }, []);
 
   return (
     <section
       ref={ref as React.RefObject<HTMLElement>}
-      className="relative w-full py-20 lg:py-32 z-20 bg-background"
+      className="relative w-full py-12 lg:py-16 z-20 bg-background"
     >
       <div className="w-full px-2 sm:px-6 lg:px-8 xl:px-12">
         {/* Header */}
-        <div className="impact-header text-center mb-12">
+        <div className="impact-header text-center mb-8 lg:mb-10">
           <span className="font-mono text-xs tracking-[0.2em] text-[#FF5A3C] uppercase">
             Impact Dashboard
           </span>
@@ -249,7 +254,7 @@ export function ImpactDashboard({ sectionRef }: ImpactDashboardProps) {
             </div>
           </div>
 
-          <div className="h-[600px] sm:h-[400px] lg:h-[450px] w-full mt-2">
+          <div className="h-[380px] sm:h-[360px] lg:h-[390px] w-full mt-2">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={monthlyVisitorData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>

@@ -159,12 +159,14 @@ export function DestinationHighlights() {
           {
             y: 0,
             opacity: 1,
-            duration: 0.8,
-            stagger: 0.1,
+            duration: 0.55,
+            stagger: 0.06,
             ease: 'power2.out',
+            immediateRender: false,
             scrollTrigger: {
               trigger: section,
-              start: 'top 80%',
+              start: 'top 88%',
+              once: true,
               toggleActions: 'play none none none',
             },
           }
@@ -178,7 +180,7 @@ export function DestinationHighlights() {
   return (
     <div ref={containerRef} className="relative w-full z-20 bg-background">
       {/* Section Header */}
-      <div className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 xl:px-12 text-center">
+      <div className="py-12 lg:py-14 px-4 sm:px-6 lg:px-8 xl:px-12 text-center">
         <span className="font-mono text-xs tracking-[0.2em] text-[#FF5A3C] uppercase">
           Featured Destinations
         </span>
@@ -195,9 +197,9 @@ export function DestinationHighlights() {
       {highlights.map((highlight) => (
         <section
           key={highlight.id}
-          className="highlight-section relative w-full min-h-screen flex items-center justify-center py-12 lg:py-20 px-4 sm:px-6 lg:px-8 xl:px-12"
+          className="highlight-section relative w-full py-8 lg:py-12 px-4 sm:px-6 lg:px-8 xl:px-12"
         >
-          <div className={`relative w-full max-w-7xl flex flex-col ${highlight.layout === 'right' ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-6 lg:gap-10`}>
+          <div className={`relative mx-auto w-full max-w-7xl flex flex-col ${highlight.layout === 'right' ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-6 lg:gap-8`}>
             {/* Photo Card */}
             <div className="photo-card relative w-full lg:w-[55%] aspect-[4/3] lg:aspect-[16/10] rounded-[24px] lg:rounded-[28px] overflow-hidden shadow-2xl">
               <img
